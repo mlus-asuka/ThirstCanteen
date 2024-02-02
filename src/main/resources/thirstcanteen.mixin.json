@@ -1,0 +1,12 @@
+{
+  "required": true,
+  "package": "vip.fubuki.thirstcanteen.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "refmap": "thirstcanteen.refmap.json",
+  "mixins": [
+    "MixinThirstHelper"
+  ],
+  "client": [
+  ],
+  "minVersion": "0.8"
+}

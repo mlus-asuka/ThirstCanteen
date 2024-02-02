@@ -1,0 +1,8 @@
+{
+  "itemGroup.ThirstCanteen": "ThirstCanteen",
+  "item.thirstcanteen.dragon_bottle": "Dragon Bottle",
+  "item.thirstcanteen.dragon_bottle_full": "Water Containing Dragon Bottle",
+  "item.thirstcanteen.military_bottle": "Military Bottle",
+  "item.thirstcanteen.military_bottle_full": "Water Containing Militart Bottle",
+  "tooltips.drinkable": "Water: %1$s/%2$s"
+}

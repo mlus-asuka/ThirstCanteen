@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:campfire_cooking",
+  "ingredient":[
+    {
+      "type": "forge:nbt",
+      "item": "thirstcanteen:dragon_bottle_full",
+      "nbt": {
+        "Purity": 2,
+        "Contain": 12
+      }
+    }
+  ],
+  "result": {
+    "item": "thirstcanteen:dragon_bottle_full",
+    "nbt": {
+      "Purity": 3,
+      "Contain": 12
+    }
+  },
+  "experience": 0.35,
+  "cookingtime":600
+}

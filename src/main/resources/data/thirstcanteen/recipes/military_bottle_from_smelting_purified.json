@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:smelting",
+  "ingredient":[
+    {
+      "type": "forge:nbt",
+      "item": "thirstcanteen:military_bottle_full",
+      "nbt": {
+        "Purity": 1,
+        "Contain": 6
+      }
+    },
+    {
+      "type": "forge:nbt",
+      "item": "thirstcanteen:military_bottle_full",
+      "nbt": {
+        "Purity": 2,
+        "Contain": 6
+      }
+    }
+  ],
+  "result": {
+    "item": "thirstcanteen:military_bottle_full",
+    "nbt": {
+      "Purity": 3,
+      "Contain": 6
+    }
+  },
+  "experience": 0.35,
+  "cookingtime": 400
+}
