@@ -122,6 +122,7 @@ public class ThirstCanteen
         }
     }
 
+    @SuppressWarnings("unused")
     @Mod.EventBusSubscriber(modid = "thirstcanteen",bus = Mod.EventBusSubscriber.Bus.MOD)
     public static class RegistryEvents{
         @SubscribeEvent
