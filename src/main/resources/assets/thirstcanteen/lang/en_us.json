@@ -4,5 +4,7 @@
   "item.thirstcanteen.dragon_bottle_full": "Water Containing Dragon Bottle",
   "item.thirstcanteen.military_bottle": "Military Bottle",
   "item.thirstcanteen.military_bottle_full": "Water Containing Militart Bottle",
+  "item.thirstcanteen.leather_canteen": "Leather Canteen",
+  "item.thirstcanteen.leather_canteen_full": "Water Containing Leather Canteen",
   "tooltips.drinkable": "Water: %1$s/%2$s"
 }

@@ -2,12 +2,12 @@
   "type": "thirstcanteen:canteen_campfire_cooking",
   "ingredient":[
     {
-      "item": "thirstcanteen:dragon_bottle_full"
+      "item": "thirstcanteen:leather_canteen_full"
     }
   ],
   "result": {
-    "item": "thirstcanteen:dragon_bottle_full"
+    "item": "thirstcanteen:leather_canteen_full"
   },
   "experience": 0.35,
-  "cookingtime":600
+  "cookingtime":400
 }

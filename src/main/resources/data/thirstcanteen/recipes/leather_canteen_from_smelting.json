@@ -2,12 +2,12 @@
   "type": "thirstcanteen:canteen_smelting",
   "ingredient":[
     {
-      "item": "thirstcanteen:dragon_bottle_full"
+      "item": "thirstcanteen:leather_canteen_full"
     }
   ],
   "result": {
-    "item": "thirstcanteen:dragon_bottle_full"
+    "item": "thirstcanteen:leather_canteen_full"
   },
   "experience": 0.35,
-  "cookingtime":400
+  "cookingtime":300
 }
