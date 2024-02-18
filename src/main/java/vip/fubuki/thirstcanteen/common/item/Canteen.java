@@ -82,7 +82,7 @@ public class Canteen extends Item implements Drinkable{
 
         ItemStack stack = context.getItemInHand();
         Player player = context.getPlayer();
-        Level level = player.level;
+        Level level = player.level();
 
         if(getLeftUsableTimes(stack) == this.usableTime)
             return InteractionResult.PASS;

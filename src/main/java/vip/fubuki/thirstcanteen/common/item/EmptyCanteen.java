@@ -25,7 +25,7 @@ public class EmptyCanteen extends Item {
     public @NotNull InteractionResult useOn(UseOnContext context,ItemStack result,int defaultPurity) {
         ItemStack stack = context.getItemInHand();
         Player player = context.getPlayer();
-        Level level = player.level;
+        Level level = player.level();
 
         BlockPos blockPos = MathHelper.getPlayerPOVHitResult(level, player, ClipContext.Fluid.ANY).getBlockPos();
 

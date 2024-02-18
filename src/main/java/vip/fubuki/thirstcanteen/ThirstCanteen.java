@@ -25,6 +25,7 @@ import org.slf4j.Logger;
 import vip.fubuki.thirstcanteen.common.item.Canteen;
 import vip.fubuki.thirstcanteen.registry.RegistryRecipe;
 import vip.fubuki.thirstcanteen.registry.ThirstCanteenItem;
+import vip.fubuki.thirstcanteen.tab.ThirstCanteenTab;
 
 import java.util.List;
 import java.util.Objects;
@@ -39,6 +40,7 @@ public class ThirstCanteen
     {
         IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
         MinecraftForge.EVENT_BUS.register(this);
+        ThirstCanteenTab.THIRST_CANTEEN_TAB.register(modBus);
         ThirstCanteenItem.ITEMS.register(modBus);
     }
 
