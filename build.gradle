@@ -19,7 +19,7 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'org.spongepowered.mixin'
 
 
-version = '1.18.2-1.1'
+version = '1.19.2-1.1'
 group = 'vip.fubuki.thirstcanteen'
 archivesBaseName = 'thirstcanteen'
 
@@ -27,7 +27,7 @@ archivesBaseName = 'thirstcanteen'
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 minecraft {
-    mappings channel: 'official', version: '1.18.2'
+    mappings channel: 'official', version: '1.19.2'
 
     // accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg') // Currently, this location cannot be changed from the default.
 
@@ -131,10 +131,10 @@ mixin {
 
 dependencies {
 
-    minecraft 'net.minecraftforge:forge:1.18.2-40.2.17'
+    minecraft 'net.minecraftforge:forge:1.19.2-43.2.4'
 
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
-    implementation fg.deobf("curse.maven:thirst-was-taken-679270:5071551")
+    implementation fg.deobf("curse.maven:thirst-was-taken-679270:5071552")
 
 }
 

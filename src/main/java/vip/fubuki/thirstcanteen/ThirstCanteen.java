@@ -5,40 +5,46 @@ import dev.ghen.thirst.api.ThirstHelper;
 import dev.ghen.thirst.content.purity.WaterPurity;
 import dev.ghen.thirst.foundation.common.capability.ModCapabilities;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.contents.LiteralContents;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraftforge.client.event.RenderTooltipEvent;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegisterEvent;
 import org.slf4j.Logger;
-import vip.fubuki.thirstcanteen.common.crafting.CanteenCampfireRecipeSerializer;
-import vip.fubuki.thirstcanteen.common.crafting.CanteenSmeltingRecipeSerializer;
 import vip.fubuki.thirstcanteen.common.item.Canteen;
+import vip.fubuki.thirstcanteen.registry.RegistryRecipe;
 import vip.fubuki.thirstcanteen.registry.ThirstCanteenItem;
 
 import java.util.List;
 import java.util.Objects;
 
-@Mod("thirstcanteen")
+@Mod(ThirstCanteen.MODID)
 public class ThirstCanteen
 {
     public static final Logger LOGGER = LogUtils.getLogger();
+    public static final String MODID = "thirstcanteen";
 
     public ThirstCanteen()
     {
         IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
         MinecraftForge.EVENT_BUS.register(this);
         ThirstCanteenItem.ITEMS.register(modBus);
+    }
+
+
+    public static ResourceLocation location(String path) {
+        return new ResourceLocation(MODID, path);
     }
 
 
@@ -68,7 +74,7 @@ public class ThirstCanteen
             if(stack.getItem() instanceof Canteen canteen){
                 List<Component> tooltip = event.getToolTip();
 
-                tooltip.add(new TranslatableComponent("tooltips.drinkable",canteen.getLeftUsableTimes(stack),canteen.usableTime));
+                tooltip.add(Component.translatable("tooltips.drinkable",canteen.getLeftUsableTimes(stack),canteen.usableTime));
 
                 int purity = getPurity(event.getItemStack());
                 if(purity >= 0 && purity <= 3)
@@ -77,7 +83,7 @@ public class ThirstCanteen
 
                     int purityColor = WaterPurity.getPurityColor(purity);
                     event.getToolTip()
-                            .add((new TextComponent(purityText))
+                            .add(MutableComponent.create(new LiteralContents(purityText))
                                     .setStyle(Style.EMPTY.withColor(purityColor)));
                         }
 
@@ -123,14 +129,11 @@ public class ThirstCanteen
     }
 
     @SuppressWarnings("unused")
-    @Mod.EventBusSubscriber(modid = "thirstcanteen",bus = Mod.EventBusSubscriber.Bus.MOD)
+    @Mod.EventBusSubscriber(modid = MODID,bus = Mod.EventBusSubscriber.Bus.MOD)
     public static class RegistryEvents{
         @SubscribeEvent
-        public static void registerRecipes(RegistryEvent.Register<RecipeSerializer<?>> event) {
-            event.getRegistry().register(CanteenSmeltingRecipeSerializer.INSTANCE
-                    .setRegistryName("canteen_smelting"));
-            event.getRegistry().register(CanteenCampfireRecipeSerializer.INSTANCE
-                    .setRegistryName("canteen_campfire_cooking"));
+        public static void registerRecipes(RegisterEvent event) {
+            event.register(ForgeRegistries.RECIPE_SERIALIZERS.getRegistryKey(), RegistryRecipe::register);
         }
     }
 }

@@ -13,13 +13,10 @@ import net.minecraft.tags.FluidTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.ClipContext;
@@ -65,7 +62,7 @@ public class Canteen extends Item implements Drinkable{
         if(player instanceof ServerPlayer serverPlayer) {
             CriteriaTriggers.CONSUME_ITEM.trigger(serverPlayer, itemStack);
             int times = getLeftUsableTimes(itemStack) - 1;
-            level.gameEvent(entity, GameEvent.DRINKING_FINISH, entity.eyeBlockPosition());
+            level.gameEvent(entity, GameEvent.EAT, entity.getOnPos());
             serverPlayer.getFoodData().eat(0,0);
             if (times != 0) {
                 itemStack.getOrCreateTag().putInt("Contain", times);

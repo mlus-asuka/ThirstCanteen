@@ -5,12 +5,11 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.CampfireCookingRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraftforge.registries.ForgeRegistryEntry;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import vip.fubuki.thirstcanteen.ThirstCanteen;
 
-public class CanteenCampfireRecipeSerializer extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<CanteenCampfireRecipe>{
+public class CanteenCampfireRecipeSerializer implements RecipeSerializer<CanteenCampfireRecipe>{
     public static CanteenCampfireRecipeSerializer INSTANCE = new CanteenCampfireRecipeSerializer();
 
     @Override
