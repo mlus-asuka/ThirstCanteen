@@ -13,13 +13,11 @@ import net.minecraft.tags.FluidTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.ClipContext;
@@ -59,6 +57,12 @@ public class Canteen extends Item implements Drinkable{
         return compoundTag.getInt("Contain");
     }
 
+    public static void spawnItemEntity(Level level, ItemStack stack, double x, double y, double z, double xMotion, double yMotion, double zMotion) {
+        ItemEntity entity = new ItemEntity(level, x, y, z, stack);
+        entity.setDeltaMovement(xMotion, yMotion, zMotion);
+        level.addFreshEntity(entity);
+    }
+
     @Override
     public @NotNull ItemStack finishUsingItem(@NotNull ItemStack itemStack, @NotNull Level level, @NotNull LivingEntity entity) {
         Player player = entity instanceof Player ? (Player)entity : null;
@@ -72,7 +76,7 @@ public class Canteen extends Item implements Drinkable{
             } else {
                 if (!player.getAbilities().instabuild)
                     itemStack.shrink(1);
-                serverPlayer.getInventory().add(container);
+                spawnItemEntity(level,container,player.getX(),player.getY(), player.getZ(), 0,0,0);
             }
         }
         if(player != null)
@@ -94,13 +98,19 @@ public class Canteen extends Item implements Drinkable{
 
         if(context.getLevel().getFluidState(blockPos).is(FluidTags.WATER)){
             stack.getOrCreateTag().putInt("Contain", getUsableTimes());
-            WaterPurity.addPurity(stack,Math.min(defaultPurity,WaterPurity.getPurity(stack)));
+            WaterPurity.addPurity(stack,Math.min(Math.max(defaultPurity,WaterPurity.getBlockPurity(level,blockPos)),WaterPurity.getPurity(stack)));
             level.playSound(player, player.getX(), player.getY(), player.getZ(), SoundEvents.BOTTLE_FILL, SoundSource.NEUTRAL, 1.0F, 1.0F);
         }
         return InteractionResult.SUCCESS;
     }
 
     public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level level, @NotNull Player player, @NotNull InteractionHand interactionHand) {
+        ItemStack stack = player.getItemInHand(interactionHand);
+        if(stack.getOrCreateTag().getInt("Contain")<=0){
+            stack.shrink(1);
+            spawnItemEntity(level,container,player.getX(),player.getY(),player.getZ(),0,0,0);
+        }
+
         player.startUsingItem(interactionHand);
         return InteractionResultHolder.success(player.getItemInHand(interactionHand));
     }
