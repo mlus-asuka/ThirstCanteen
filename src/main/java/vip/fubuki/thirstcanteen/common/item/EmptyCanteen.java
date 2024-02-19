@@ -31,7 +31,7 @@ public class EmptyCanteen extends Item {
 
         if(context.getLevel().getFluidState(blockPos).is(FluidTags.WATER)){
             stack.shrink(1);
-            player.getInventory().add(WaterPurity.addPurity(result,Math.min(defaultPurity,WaterPurity.getBlockPurity(level,blockPos))));
+            player.getInventory().add(WaterPurity.addPurity(result,Math.max(defaultPurity,WaterPurity.getBlockPurity(level,blockPos))));
             level.playSound(player, player.getX(), player.getY(), player.getZ(), SoundEvents.BOTTLE_FILL, SoundSource.NEUTRAL, 1.0F, 1.0F);
         }
         return InteractionResult.SUCCESS;
