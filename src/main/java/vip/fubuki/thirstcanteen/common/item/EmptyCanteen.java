@@ -13,6 +13,14 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.LayeredCauldronBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Fluids;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.NotNull;
 
 public class EmptyCanteen extends Item {
@@ -28,12 +36,57 @@ public class EmptyCanteen extends Item {
         Level level = player.level;
 
         BlockPos blockPos = MathHelper.getPlayerPOVHitResult(level, player, ClipContext.Fluid.ANY).getBlockPos();
+        BlockEntity blockEntity = context.getLevel().getBlockEntity(context.getClickedPos());
+        BlockState blockState = context.getLevel().getBlockState(context.getClickedPos());
+        int needed = ((Canteen) result.getItem()).getUsableTimes();
+        boolean handled = false;
 
-        if(context.getLevel().getFluidState(blockPos).is(FluidTags.WATER)){
+        if (context.getLevel().getFluidState(blockPos).is(FluidTags.WATER)) {
+            result.getOrCreateTag().putInt("Contain", (((Canteen) result.getItem()).getUsableTimes()));
+            handled=true;
+        } else if(blockEntity != null){
+            //Handle with Fluid Capability
+            LazyOptional<IFluidHandler> capability = blockEntity.getCapability(ForgeCapabilities.FLUID_HANDLER);
+            if (capability.isPresent()) {
+                IFluidHandler iFluidHandler = capability.orElse(null);
+                int totalAmount = 0;
+                for (int i = 0; i < iFluidHandler.getTanks(); i++) {
+                    if (iFluidHandler.getFluidInTank(i).getFluid() != Fluids.WATER)
+                        break;
+                    else {
+                        totalAmount += iFluidHandler.getFluidInTank(i).getAmount();
+                    }
+                }
+                totalAmount = totalAmount / 250;
+                int actual = Math.min(needed, totalAmount);
+                if (actual <= 0)
+                    return InteractionResult.PASS;
+                iFluidHandler.drain(actual * 250, IFluidHandler.FluidAction.EXECUTE);
+                result.getOrCreateTag().putInt("Contain", Math.min(((Canteen) result.getItem()).getUsableTimes(), Math.min(needed, actual)));
+                handled=true;
+            }
+        } else if (blockState.getBlock() instanceof LayeredCauldronBlock) {
+            int waterLevel = blockState.getValue(LayeredCauldronBlock.LEVEL);
+            int actual = Math.min(needed,waterLevel);
+            if(actual<=0)
+                return InteractionResult.PASS;
+            if (waterLevel - actual > 0) {
+                blockState.setValue(LayeredCauldronBlock.LEVEL, waterLevel-actual);
+            }else {
+                blockState = Blocks.CAULDRON.defaultBlockState();
+            }
+            level.setBlockAndUpdate(context.getClickedPos(),blockState);
+            result.getOrCreateTag().putInt("Contain",Math.min(((Canteen) result.getItem()).getUsableTimes(),actual));
+            handled=true;
+        }
+
+        if(handled){
             stack.shrink(1);
-            player.getInventory().add(WaterPurity.addPurity(result,Math.max(defaultPurity,WaterPurity.getBlockPurity(level,blockPos))));
+            WaterPurity.addPurity(result, Math.max(defaultPurity, WaterPurity.getBlockPurity(level, blockPos)));
+            player.getInventory().add(result);
             level.playSound(player, player.getX(), player.getY(), player.getZ(), SoundEvents.BOTTLE_FILL, SoundSource.NEUTRAL, 1.0F, 1.0F);
         }
+
         return InteractionResult.SUCCESS;
     }
 }

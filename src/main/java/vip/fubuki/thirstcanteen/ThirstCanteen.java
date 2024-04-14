@@ -1,6 +1,5 @@
 package vip.fubuki.thirstcanteen;
 
-import com.mojang.logging.LogUtils;
 import dev.ghen.thirst.api.ThirstHelper;
 import dev.ghen.thirst.content.purity.ContainerWithPurity;
 import dev.ghen.thirst.content.purity.WaterPurity;
@@ -18,7 +17,8 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegisterEvent;
-import org.slf4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import vip.fubuki.thirstcanteen.common.item.Canteen;
 import vip.fubuki.thirstcanteen.registry.RegistryRecipe;
 import vip.fubuki.thirstcanteen.registry.ThirstCanteenItem;
@@ -28,7 +28,7 @@ import java.util.List;
 @Mod(ThirstCanteen.MODID)
 public class ThirstCanteen
 {
-    public static final Logger LOGGER = LogUtils.getLogger();
+    public static final Logger LOGGER = LogManager.getLogger();
     public static final String MODID = "thirstcanteen";
 
     public ThirstCanteen()

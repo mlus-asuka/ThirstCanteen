@@ -22,7 +22,15 @@ import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.LayeredCauldronBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.level.material.Fluids;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.NotNull;
 
 public class Canteen extends Item implements Drinkable{
@@ -86,7 +94,6 @@ public class Canteen extends Item implements Drinkable{
 
     @Override
     public @NotNull InteractionResult useOn(UseOnContext context) {
-
         ItemStack stack = context.getItemInHand();
         Player player = context.getPlayer();
         Level level = player.level;
@@ -94,13 +101,59 @@ public class Canteen extends Item implements Drinkable{
         if(getLeftUsableTimes(stack) == this.usableTime)
             return InteractionResult.PASS;
 
+        boolean handled = false;
         BlockPos blockPos = MathHelper.getPlayerPOVHitResult(level, player, ClipContext.Fluid.ANY).getBlockPos();
+        BlockEntity blockEntity = context.getLevel().getBlockEntity(context.getClickedPos());
+        BlockState blockState = context.getLevel().getBlockState(context.getClickedPos());
+        int current = stack.getOrCreateTag().getInt("Contain");
+        int needed = getUsableTimes() - current;
 
         if(context.getLevel().getFluidState(blockPos).is(FluidTags.WATER)){
             stack.getOrCreateTag().putInt("Contain", getUsableTimes());
+            handled=true;
+        }else if(blockEntity != null){
+            //Handle with Fluid Capability
+            LazyOptional<IFluidHandler> capability = blockEntity.getCapability(ForgeCapabilities.FLUID_HANDLER);
+
+            if (capability.isPresent()){
+                IFluidHandler iFluidHandler = capability.orElse(null);
+                int totalAmount=0;
+                for (int i = 0; i < iFluidHandler.getTanks(); i++) {
+                    if (iFluidHandler.getFluidInTank(i).getFluid() != Fluids.WATER)
+                        break;
+                    else {
+                        totalAmount+=iFluidHandler.getFluidInTank(i).getAmount();
+                    }
+                }
+                totalAmount=totalAmount/250;
+                int actual = Math.min(needed,totalAmount);
+                if(actual<=0)
+                    return InteractionResult.PASS;
+                iFluidHandler.drain(actual*250, IFluidHandler.FluidAction.EXECUTE);
+                stack.getOrCreateTag().putInt("Contain",Math.min(getUsableTimes(),current+actual));
+                handled=true;
+            }
+        } else if (blockState.getBlock() instanceof LayeredCauldronBlock) {
+            int waterLevel = blockState.getValue(LayeredCauldronBlock.LEVEL);
+            int actual = Math.min(needed,waterLevel);
+            if(actual<=0)
+                return InteractionResult.PASS;
+            if (waterLevel - actual > 0) {
+                blockState.setValue(LayeredCauldronBlock.LEVEL, waterLevel-actual);
+            }else {
+                blockState = Blocks.CAULDRON.defaultBlockState();
+            }
+            level.setBlockAndUpdate(context.getClickedPos(),blockState);
+
+            stack.getOrCreateTag().putInt("Contain",Math.min(getUsableTimes(),current+waterLevel));
+            handled=true;
+        }
+
+        if(handled){
             WaterPurity.addPurity(stack,Math.min(Math.max(defaultPurity,WaterPurity.getBlockPurity(level,blockPos)),WaterPurity.getPurity(stack)));
             level.playSound(player, player.getX(), player.getY(), player.getZ(), SoundEvents.BOTTLE_FILL, SoundSource.NEUTRAL, 1.0F, 1.0F);
         }
+
         return InteractionResult.SUCCESS;
     }
 
