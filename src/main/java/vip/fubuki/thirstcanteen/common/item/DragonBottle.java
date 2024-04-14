@@ -1,18 +1,18 @@
 package vip.fubuki.thirstcanteen.common.item;
 
+import dev.ghen.thirst.foundation.tab.ThirstTab;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.context.UseOnContext;
 import org.jetbrains.annotations.NotNull;
 import vip.fubuki.thirstcanteen.registry.ThirstCanteenItem;
-import vip.fubuki.thirstcanteen.tab.ThirstCanteenTab;
 
 public class DragonBottle extends EmptyCanteen {
     public DragonBottle() {
         super(new Properties()
                 .stacksTo(1)
                 .rarity(Rarity.EPIC)
-                .tab(ThirstCanteenTab.THIRST_CANTEEN_TAB));
+                .tab(ThirstTab.THIRST_TAB));
     }
 
     @Override
