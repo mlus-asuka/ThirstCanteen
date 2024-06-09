@@ -6,8 +6,7 @@ import vip.fubuki.thirstcanteen.registry.ThirstCanteenItem;
 public class FullLeatherCanteen extends Canteen{
     public FullLeatherCanteen() {
         super(new Properties()
-                .stacksTo(1)
-                .tab(ThirstTab.THIRST_TAB));
+                .tab(ThirstTab.THIRST_TAB),4);
         this.usableTime = 4;
         this.container = ThirstCanteenItem.LEATHER_CANTEEN.get().getDefaultInstance();
         this.defaultPurity=0;

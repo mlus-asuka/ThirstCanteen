@@ -26,7 +26,7 @@ import org.jetbrains.annotations.NotNull;
 public class EmptyCanteen extends Item {
 
     public EmptyCanteen(Properties properties) {
-        super(properties);
+        super(properties.stacksTo(1));
     }
 
 
@@ -38,11 +38,11 @@ public class EmptyCanteen extends Item {
         BlockPos blockPos = MathHelper.getPlayerPOVHitResult(level, player, ClipContext.Fluid.ANY).getBlockPos();
         BlockEntity blockEntity = context.getLevel().getBlockEntity(context.getClickedPos());
         BlockState blockState = context.getLevel().getBlockState(context.getClickedPos());
-        int needed = ((Canteen) result.getItem()).getUsableTimes();
+        int needed = ((Canteen) result.getItem()).getMaxUsableTimes();
         boolean handled = false;
 
         if (context.getLevel().getFluidState(blockPos).is(FluidTags.WATER)) {
-            result.getOrCreateTag().putInt("Contain", (((Canteen) result.getItem()).getUsableTimes()));
+            result.getOrCreateTag().putInt("Damage", 0);
             handled=true;
         } else if(blockEntity != null){
             //Handle with Fluid Capability
@@ -62,7 +62,7 @@ public class EmptyCanteen extends Item {
                 if (actual <= 0)
                     return InteractionResult.PASS;
                 iFluidHandler.drain(actual * 250, IFluidHandler.FluidAction.EXECUTE);
-                result.getOrCreateTag().putInt("Contain", Math.min(((Canteen) result.getItem()).getUsableTimes(), Math.min(needed, actual)));
+                result.getOrCreateTag().putInt("Damage", Math.max(0, needed - actual));
                 handled=true;
             }
         } else if (blockState.getBlock() instanceof LayeredCauldronBlock) {
@@ -76,7 +76,9 @@ public class EmptyCanteen extends Item {
                 blockState = Blocks.CAULDRON.defaultBlockState();
             }
             level.setBlockAndUpdate(context.getClickedPos(),blockState);
-            result.getOrCreateTag().putInt("Contain",Math.min(((Canteen) result.getItem()).getUsableTimes(),actual));
+
+
+            result.getOrCreateTag().putInt("Damage",Math.max(0,needed - actual));
             handled=true;
         }
 

@@ -4,7 +4,6 @@ import dev.ghen.thirst.content.purity.WaterPurity;
 import dev.ghen.thirst.foundation.util.MathHelper;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -33,14 +32,16 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.NotNull;
 
-public class Canteen extends Item implements Drinkable{
+import java.util.Random;
+
+public abstract class Canteen extends Item implements Drinkable{
 
     public int usableTime;
 
     public ItemStack container;
     public int defaultPurity;
-    public Canteen(Properties properties) {
-        super(properties);
+    public Canteen(Properties properties,int usableTime) {
+        super(properties.defaultDurability(usableTime));
     }
 
     public int getUseDuration(@NotNull ItemStack p_43001_) {
@@ -52,17 +53,13 @@ public class Canteen extends Item implements Drinkable{
     }
 
     @Override
-    public int getUsableTimes() {
+    public int getMaxUsableTimes() {
         return usableTime;
     }
 
     @Override
     public int getLeftUsableTimes(ItemStack itemStack) {
-        CompoundTag compoundTag = itemStack.getOrCreateTag();
-        if (!compoundTag.contains("Contain", 99)) {
-            compoundTag.putInt("Contain", getUsableTimes());
-        }
-        return compoundTag.getInt("Contain");
+        return usableTime - itemStack.getDamageValue();
     }
 
     public static void spawnItemEntity(Level level, ItemStack stack, double x, double y, double z, double xMotion, double yMotion, double zMotion) {
@@ -76,12 +73,13 @@ public class Canteen extends Item implements Drinkable{
         Player player = entity instanceof Player ? (Player)entity : null;
         if(player instanceof ServerPlayer serverPlayer) {
             CriteriaTriggers.CONSUME_ITEM.trigger(serverPlayer, itemStack);
-            int times = getLeftUsableTimes(itemStack) - 1;
             level.gameEvent(entity, GameEvent.DRINKING_FINISH, entity.eyeBlockPosition());
             serverPlayer.getFoodData().eat(0,0);
-            if (times != 0) {
-                itemStack.getOrCreateTag().putInt("Contain", times);
-            } else {
+
+            itemStack.hurt(1,new Random(),serverPlayer);
+
+            int times = getLeftUsableTimes(itemStack);
+            if (times == 0) {
                 if (!player.getAbilities().instabuild)
                     itemStack.shrink(1);
                 spawnItemEntity(level,container,player.getX(),player.getY(), player.getZ(), 0,0,0);
@@ -98,18 +96,18 @@ public class Canteen extends Item implements Drinkable{
         Player player = context.getPlayer();
         Level level = player.level;
 
-        if(getLeftUsableTimes(stack) == this.usableTime)
+        if(!stack.isDamaged())
             return InteractionResult.PASS;
 
         boolean handled = false;
         BlockPos blockPos = MathHelper.getPlayerPOVHitResult(level, player, ClipContext.Fluid.ANY).getBlockPos();
         BlockEntity blockEntity = context.getLevel().getBlockEntity(context.getClickedPos());
         BlockState blockState = context.getLevel().getBlockState(context.getClickedPos());
-        int current = stack.getOrCreateTag().getInt("Contain");
-        int needed = getUsableTimes() - current;
+
+        int needed = stack.getDamageValue();
 
         if(context.getLevel().getFluidState(blockPos).is(FluidTags.WATER)){
-            stack.getOrCreateTag().putInt("Contain", getUsableTimes());
+            stack.getOrCreateTag().putInt("Damage", 0);
             handled=true;
         }else if(blockEntity != null){
             //Handle with Fluid Capability
@@ -130,7 +128,7 @@ public class Canteen extends Item implements Drinkable{
                 if(actual<=0)
                     return InteractionResult.PASS;
                 iFluidHandler.drain(actual*250, IFluidHandler.FluidAction.EXECUTE);
-                stack.getOrCreateTag().putInt("Contain",Math.min(getUsableTimes(),current+actual));
+                stack.getOrCreateTag().putInt("Damage",Math.max(0,needed - actual));
                 handled=true;
             }
         } else if (blockState.getBlock() instanceof LayeredCauldronBlock) {
@@ -145,8 +143,10 @@ public class Canteen extends Item implements Drinkable{
             }
             level.setBlockAndUpdate(context.getClickedPos(),blockState);
 
-            stack.getOrCreateTag().putInt("Contain",Math.min(getUsableTimes(),current+waterLevel));
+            stack.getOrCreateTag().putInt("Damage",Math.max(0,needed - waterLevel));
             handled=true;
+        }else {
+            player.startUsingItem(context.getHand());
         }
 
         if(handled){
@@ -158,12 +158,11 @@ public class Canteen extends Item implements Drinkable{
     }
 
     public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level level, @NotNull Player player, @NotNull InteractionHand interactionHand) {
-        ItemStack stack = player.getItemInHand(interactionHand);
-        if(stack.getOrCreateTag().getInt("Contain")<=0){
-            stack.shrink(1);
-            spawnItemEntity(level,container,player.getX(),player.getY(),player.getZ(),0,0,0);
-        }
-
+//        ItemStack stack = player.getItemInHand(interactionHand);
+//        if(stack.getOrCreateTag().getInt("Contain")<=0){
+//            stack.shrink(1);
+//            spawnItemEntity(level,container,player.getX(),player.getY(),player.getZ(),0,0,0);
+//        }
         player.startUsingItem(interactionHand);
         return InteractionResultHolder.success(player.getItemInHand(interactionHand));
     }
