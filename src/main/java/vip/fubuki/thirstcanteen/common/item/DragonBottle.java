@@ -9,7 +9,6 @@ import vip.fubuki.thirstcanteen.registry.ThirstCanteenItem;
 public class DragonBottle extends EmptyCanteen {
     public DragonBottle() {
         super(new Properties()
-                .stacksTo(1)
                 .rarity(Rarity.EPIC));
     }
 

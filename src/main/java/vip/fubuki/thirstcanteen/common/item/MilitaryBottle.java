@@ -7,7 +7,7 @@ import vip.fubuki.thirstcanteen.registry.ThirstCanteenItem;
 
 public class MilitaryBottle extends EmptyCanteen {
     public MilitaryBottle() {
-        super(new Properties().stacksTo(1));
+        super(new Properties());
     }
 
     @Override

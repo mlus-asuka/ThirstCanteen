@@ -8,7 +8,7 @@ import vip.fubuki.thirstcanteen.registry.ThirstCanteenItem;
 public class LeatherCanteen extends EmptyCanteen {
 
     public LeatherCanteen() {
-        super(new Properties().stacksTo(1));
+        super(new Properties());
     }
 
     @Override

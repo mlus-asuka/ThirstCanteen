@@ -25,17 +25,17 @@ public class CanteenCampfireRecipe extends CampfireCookingRecipe {
     @NotNull
     public ItemStack assemble(Container container, @NotNull RegistryAccess registryAccess) {
         int purity;
-        int contain;
+        int damage;
 
         ItemStack stack = container.getItem(0);
         CompoundTag compoundTag = stack.getOrCreateTag();
         purity = Math.min(compoundTag.getInt("Purity")+1,3);
-        contain = compoundTag.getInt("Contain");
+        damage = compoundTag.getInt("Damage");
 
         ItemStack result = getResultItem(registryAccess).copy();
         CompoundTag tag = result.getOrCreateTag();
         tag.putInt("Purity",purity);
-        tag.putInt("Contain",contain);
+        tag.putInt("Damage",damage);
 
         return result;
     }
