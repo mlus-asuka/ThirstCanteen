@@ -1,14 +1,10 @@
 package vip.fubuki.thirstcanteen;
 
-import dev.ghen.thirst.api.ThirstHelper;
-import dev.ghen.thirst.content.purity.ContainerWithPurity;
-import dev.ghen.thirst.content.purity.WaterPurity;
+import dev.ghen.thirst.foundation.common.event.RegisterThirstValueEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.client.event.RenderTooltipEvent;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -20,6 +16,7 @@ import net.minecraftforge.registries.RegisterEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import vip.fubuki.thirstcanteen.common.item.Canteen;
+import vip.fubuki.thirstcanteen.config.ThirstCanteenConfig;
 import vip.fubuki.thirstcanteen.registry.RegistryRecipe;
 import vip.fubuki.thirstcanteen.registry.ThirstCanteenItem;
 
@@ -33,6 +30,8 @@ public class ThirstCanteen
 
     public ThirstCanteen()
     {
+        ThirstCanteenConfig.setup();
+
         IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
         MinecraftForge.EVENT_BUS.register(this);
         ThirstCanteenItem.ITEMS.register(modBus);
@@ -73,29 +72,14 @@ public class ThirstCanteen
             }
         }
 
-        private static void DrinkList(){
-            ThirstHelper.addDrink(ThirstCanteenItem.MILITARY_BOTTLE_FULL.get(),6,8);
-            ThirstHelper.addDrink(ThirstCanteenItem.DRAGON_BOTTLE_FULL.get(),6,8);
-            ThirstHelper.addDrink(ThirstCanteenItem.LEATHER_CANTEEN_FULL.get(),6,8);
-            WaterPurity.addContainer(new ContainerWithPurity(new ItemStack(ThirstCanteenItem.MILITARY_BOTTLE_FULL.get())));
-            WaterPurity.addContainer(new ContainerWithPurity(new ItemStack(ThirstCanteenItem.DRAGON_BOTTLE_FULL.get())));
-            WaterPurity.addContainer(new ContainerWithPurity(new ItemStack(ThirstCanteenItem.LEATHER_CANTEEN_FULL.get())));
-        }
-
         @SubscribeEvent
-        public static void registerDrinks(LivingEntityUseItemEvent.Finish event){
-            if(!init){
-                DrinkList();
-                init = true;
-            }
-        }
-
-        @SubscribeEvent
-        public static void registerDrinks(RenderTooltipEvent.GatherComponents event){
-            if(!init){
-                DrinkList();
-                init = true;
-            }
+        public static void registerDrinks(RegisterThirstValueEvent event){
+            event.addDrink(ThirstCanteenItem.MILITARY_BOTTLE_FULL.get(),6,8);
+            event.addDrink(ThirstCanteenItem.DRAGON_BOTTLE_FULL.get(),6,8);
+            event.addDrink(ThirstCanteenItem.LEATHER_CANTEEN_FULL.get(),6,8);
+            event.addContainer(ThirstCanteenItem.MILITARY_BOTTLE_FULL.get());
+            event.addContainer(ThirstCanteenItem.DRAGON_BOTTLE_FULL.get());
+            event.addContainer(ThirstCanteenItem.LEATHER_CANTEEN_FULL.get());
         }
     }
 
