@@ -114,11 +114,14 @@ public abstract class Canteen extends Item implements Drinkable{
             if (capability.isPresent()){
                 IFluidHandler iFluidHandler = capability.orElse(null);
                 int totalAmount=0;
+                int purity=0;
                 for (int i = 0; i < iFluidHandler.getTanks(); i++) {
                     if (iFluidHandler.getFluidInTank(i).getFluid() != Fluids.WATER)
                         break;
                     else {
                         totalAmount+=iFluidHandler.getFluidInTank(i).getAmount();
+                        purity = Math.min(purity,WaterPurity.getPurity(iFluidHandler.getFluidInTank(i)));
+
                     }
                 }
                 totalAmount=totalAmount/250;
@@ -127,7 +130,8 @@ public abstract class Canteen extends Item implements Drinkable{
                     return InteractionResult.PASS;
                 iFluidHandler.drain(actual*250, IFluidHandler.FluidAction.EXECUTE);
                 stack.getOrCreateTag().putInt("Damage",Math.max(0,needed - actual));
-                handled=true;
+                WaterPurity.addPurity(stack,Math.min(Math.max(defaultPurity,purity),WaterPurity.getPurity(stack)));
+                level.playSound(player, player.getX(), player.getY(), player.getZ(), SoundEvents.BOTTLE_FILL, SoundSource.NEUTRAL, 1.0F, 1.0F);
             }
         } else if (blockState.getBlock() instanceof LayeredCauldronBlock) {
             int waterLevel = blockState.getValue(LayeredCauldronBlock.LEVEL);
