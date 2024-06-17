@@ -6,7 +6,8 @@
     }
   ],
   "result": {
-    "item": "thirstcanteen:dragon_bottle_full"
+    "id": "thirstcanteen:dragon_bottle_full",
+    "count": 1
   },
   "experience": 0.35,
   "cookingtime":600

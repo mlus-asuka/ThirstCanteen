@@ -1,43 +1,14 @@
 package vip.fubuki.thirstcanteen.common.crafting;
 
-import com.google.gson.JsonObject;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.crafting.AbstractCookingRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.SmeltingRecipe;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import vip.fubuki.thirstcanteen.ThirstCanteen;
+import net.minecraft.world.item.crafting.SimpleCookingSerializer;
 
-public class CanteenSmeltingRecipeSerializer implements RecipeSerializer<CanteenSmeltingRecipe>{
+public class CanteenSmeltingRecipeSerializer extends SimpleCookingSerializer<CanteenSmeltingRecipe> implements RecipeSerializer<CanteenSmeltingRecipe>{
 
-    public static CanteenSmeltingRecipeSerializer INSTANCE = new CanteenSmeltingRecipeSerializer();
+    public static CanteenSmeltingRecipeSerializer INSTANCE = new CanteenSmeltingRecipeSerializer(CanteenSmeltingRecipe::new,100);
 
-    @Override
-    public @NotNull CanteenSmeltingRecipe fromJson(@NotNull ResourceLocation resourceLocation, @NotNull JsonObject jsonObject) {
-        return new CanteenSmeltingRecipe(RecipeSerializer.SMELTING_RECIPE.fromJson(resourceLocation,jsonObject));
-    }
-
-    @Nullable
-    @Override
-    public CanteenSmeltingRecipe fromNetwork(@NotNull ResourceLocation resourceLocation, @NotNull FriendlyByteBuf friendlyByteBuf) {
-        try{
-            SmeltingRecipe recipe = RecipeSerializer.SMELTING_RECIPE.fromNetwork(resourceLocation,friendlyByteBuf);
-            if(recipe != null){
-                return new CanteenSmeltingRecipe(recipe);
-            }
-        }catch (Exception e){
-            ThirstCanteen.LOGGER.error("Error reading Thirst Canteen Recipe from Packet",e);
-        }
-        return null;
-    }
-
-    @Override
-    public void toNetwork(@NotNull FriendlyByteBuf friendlyByteBuf, @NotNull CanteenSmeltingRecipe canteenSmeltingRecipe) {
-        try{
-            RecipeSerializer.SMELTING_RECIPE.toNetwork(friendlyByteBuf,canteenSmeltingRecipe);
-        }catch (Exception e){
-            ThirstCanteen.LOGGER.error("Error writing Thirst Canteen Recipe from Packet",e);
-        }
+    public CanteenSmeltingRecipeSerializer(AbstractCookingRecipe.Factory<CanteenSmeltingRecipe> pFactory, int pCookingTime) {
+        super(pFactory, pCookingTime);
     }
 }

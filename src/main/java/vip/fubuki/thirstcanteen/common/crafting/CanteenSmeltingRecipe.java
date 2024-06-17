@@ -1,43 +1,33 @@
 package vip.fubuki.thirstcanteen.common.crafting;
 
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.Container;
+import dev.ghen.thirst.content.registry.ThirstComponent;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CookingBookCategory;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.SmeltingRecipe;
+import net.minecraft.world.item.crafting.*;
 import org.jetbrains.annotations.NotNull;
+import vip.fubuki.thirstcanteen.common.item.Canteen;
 
 public class CanteenSmeltingRecipe extends SmeltingRecipe {
 
 
-    public CanteenSmeltingRecipe(ResourceLocation recipeType, String groupID, CookingBookCategory cookingBookCategory , Ingredient ingredient, ItemStack result , float experience, int cookingTime) {
-        super(recipeType,groupID,cookingBookCategory ,ingredient, result, experience, cookingTime);
-    }
-
-    public CanteenSmeltingRecipe(SmeltingRecipe recipe){
-        super(recipe.getId(),recipe.getGroup(),recipe.category(),recipe.getIngredients().get(0), recipe.getResultItem(RegistryAccess.EMPTY),recipe.getExperience(),recipe.getCookingTime());
+    public CanteenSmeltingRecipe(String groupID, CookingBookCategory cookingBookCategory , Ingredient ingredient, ItemStack result , float experience, int cookingTime) {
+        super(groupID,cookingBookCategory ,ingredient, result, experience, cookingTime);
     }
 
     @Override
-    @NotNull
-    public ItemStack assemble(Container container, @NotNull RegistryAccess registryAccess) {
-        int purity;
-        int damage;
+    public @NotNull ItemStack assemble(@NotNull SingleRecipeInput recipeInput, HolderLookup.@NotNull Provider provider) {
+        ItemStack stack = recipeInput.item();
+        if(stack.get(ThirstComponent.PURITY)==null){
+            if(stack.getItem() instanceof Canteen canteen)
+                stack.set(ThirstComponent.PURITY,canteen.defaultPurity);
+        }
+        int purity = Math.min(stack.get(ThirstComponent.PURITY)+1,3);
+        ItemStack result = this.result.copy();
 
-        ItemStack stack = container.getItem(0);
-        CompoundTag compoundTag = stack.getOrCreateTag();
-        purity = Math.min(compoundTag.getInt("Purity")+2,3);
-        damage = compoundTag.getInt("Damage");
+        result.set(ThirstComponent.PURITY,purity);
 
-        ItemStack result = getResultItem(registryAccess).copy();
-        CompoundTag tag = result.getOrCreateTag();
-        tag.putInt("Purity",purity);
-        tag.putInt("Damage",damage);
-
+        result.set(DataComponents.DAMAGE,stack.getDamageValue());
         return result;
     }
 

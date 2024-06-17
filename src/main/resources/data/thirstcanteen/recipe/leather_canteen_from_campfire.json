@@ -6,7 +6,8 @@
     }
   ],
   "result": {
-    "item": "thirstcanteen:leather_canteen_full"
+    "id": "thirstcanteen:leather_canteen_full",
+    "count": 1
   },
   "experience": 0.35,
   "cookingtime":400

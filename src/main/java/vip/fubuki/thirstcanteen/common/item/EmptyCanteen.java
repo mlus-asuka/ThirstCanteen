@@ -18,9 +18,8 @@ import net.minecraft.world.level.block.LayeredCauldronBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluids;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.NotNull;
 
 public class EmptyCanteen extends Item {
@@ -42,13 +41,12 @@ public class EmptyCanteen extends Item {
         boolean handled = false;
 
         if (context.getLevel().getFluidState(blockPos).is(FluidTags.WATER)) {
-            result.getOrCreateTag().putInt("Damage", 0);
+            result.setDamageValue( 0);
             handled=true;
         } else if(blockEntity != null){
             //Handle with Fluid Capability
-            LazyOptional<IFluidHandler> capability = blockEntity.getCapability(ForgeCapabilities.FLUID_HANDLER);
-            if (capability.isPresent()) {
-                IFluidHandler iFluidHandler = capability.orElse(null);
+            IFluidHandler iFluidHandler = Capabilities.FluidHandler.BLOCK.getCapability(level,blockPos,blockState,blockEntity,null);
+            if (iFluidHandler != null) {
                 int totalAmount = 0;
                 for (int i = 0; i < iFluidHandler.getTanks(); i++) {
                     if (iFluidHandler.getFluidInTank(i).getFluid() != Fluids.WATER)
@@ -62,7 +60,7 @@ public class EmptyCanteen extends Item {
                 if (actual <= 0)
                     return InteractionResult.PASS;
                 iFluidHandler.drain(actual * 250, IFluidHandler.FluidAction.EXECUTE);
-                result.getOrCreateTag().putInt("Damage", Math.max(0, needed - actual));
+                result.setDamageValue(Math.max(0, needed - actual));
                 handled=true;
             }
         } else if (blockState.getBlock() instanceof LayeredCauldronBlock) {
@@ -78,7 +76,7 @@ public class EmptyCanteen extends Item {
             level.setBlockAndUpdate(context.getClickedPos(),blockState);
 
 
-            result.getOrCreateTag().putInt("Damage",Math.max(0,needed - actual));
+            result.setDamageValue(Math.max(0,needed - actual));
             handled=true;
         }
 

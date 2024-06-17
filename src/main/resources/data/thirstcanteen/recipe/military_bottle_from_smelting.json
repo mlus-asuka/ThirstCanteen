@@ -6,7 +6,8 @@
     }
   ],
   "result": {
-    "item": "thirstcanteen:military_bottle_full"
+    "id": "thirstcanteen:military_bottle_full",
+    "count": 1
   },
   "experience": 0.35,
   "cookingtime":300

@@ -4,6 +4,7 @@ import dev.ghen.thirst.content.purity.WaterPurity;
 import dev.ghen.thirst.foundation.util.MathHelper;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -27,9 +28,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.material.Fluids;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class Canteen extends Item implements Drinkable{
@@ -39,10 +39,11 @@ public abstract class Canteen extends Item implements Drinkable{
     public ItemStack container;
     public int defaultPurity;
     public Canteen(Properties properties,int usableTime) {
-        super(properties.defaultDurability(usableTime));
+        super(properties.durability(usableTime));
     }
 
-    public int getUseDuration(@NotNull ItemStack p_43001_) {
+    @Override
+    public int getUseDuration(@NotNull ItemStack stack, @NotNull LivingEntity user) {
         return 32;
     }
 
@@ -71,13 +72,16 @@ public abstract class Canteen extends Item implements Drinkable{
         Player player = entity instanceof Player ? (Player)entity : null;
         if(player instanceof ServerPlayer serverPlayer) {
             CriteriaTriggers.CONSUME_ITEM.trigger(serverPlayer, itemStack);
-            level.gameEvent(entity, GameEvent.EAT, entity.getOnPos());
+            serverPlayer.gameEvent(GameEvent.EAT);
             serverPlayer.getFoodData().eat(0,0);
 
-            itemStack.hurt(1,level.random,serverPlayer);
-
             int times = getLeftUsableTimes(itemStack);
-            if (times == 0) {
+            itemStack.hurtAndBreak(1, (ServerLevel) level, serverPlayer, item -> {
+
+            });
+
+
+            if (times == 1) {
                 if (!player.getAbilities().instabuild)
                     itemStack.shrink(1);
                 spawnItemEntity(level,container,player.getX(),player.getY(), player.getZ(), 0,0,0);
@@ -105,14 +109,12 @@ public abstract class Canteen extends Item implements Drinkable{
         int needed = stack.getDamageValue();
 
         if(context.getLevel().getFluidState(blockPos).is(FluidTags.WATER)){
-            stack.getOrCreateTag().putInt("Damage", 0);
+            stack.setDamageValue(0);
             handled=true;
         }else if(blockEntity != null){
             //Handle with Fluid Capability
-            LazyOptional<IFluidHandler> capability = blockEntity.getCapability(ForgeCapabilities.FLUID_HANDLER);
-
-            if (capability.isPresent()){
-                IFluidHandler iFluidHandler = capability.orElse(null);
+            IFluidHandler iFluidHandler = Capabilities.FluidHandler.BLOCK.getCapability(level,blockPos,blockState,blockEntity,null);
+            if (iFluidHandler != null){
                 int totalAmount=0;
                 int purity=0;
                 for (int i = 0; i < iFluidHandler.getTanks(); i++) {
@@ -129,7 +131,7 @@ public abstract class Canteen extends Item implements Drinkable{
                 if(actual<=0)
                     return InteractionResult.PASS;
                 iFluidHandler.drain(actual*250, IFluidHandler.FluidAction.EXECUTE);
-                stack.getOrCreateTag().putInt("Damage",Math.max(0,needed - actual));
+                stack.setDamageValue(Math.max(0,needed - actual));
                 WaterPurity.addPurity(stack,Math.min(Math.max(defaultPurity,purity),WaterPurity.getPurity(stack)));
                 level.playSound(player, player.getX(), player.getY(), player.getZ(), SoundEvents.BOTTLE_FILL, SoundSource.NEUTRAL, 1.0F, 1.0F);
             }
@@ -145,7 +147,7 @@ public abstract class Canteen extends Item implements Drinkable{
             }
             level.setBlockAndUpdate(context.getClickedPos(),blockState);
 
-            stack.getOrCreateTag().putInt("Damage",Math.max(0,needed - waterLevel));
+            stack.setDamageValue(Math.max(0,needed - waterLevel));
             handled=true;
         }else {
             player.startUsingItem(context.getHand());
@@ -166,7 +168,7 @@ public abstract class Canteen extends Item implements Drinkable{
 //            spawnItemEntity(level,container,player.getX(),player.getY(),player.getZ(),0,0,0);
 //        }
         player.startUsingItem(interactionHand);
-        return InteractionResultHolder.success(player.getItemInHand(interactionHand));
+        return InteractionResultHolder.consume(player.getItemInHand(interactionHand));
     }
 
 }
