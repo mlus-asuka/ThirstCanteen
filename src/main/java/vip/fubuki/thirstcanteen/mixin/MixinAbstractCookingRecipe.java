@@ -17,7 +17,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import vip.fubuki.thirstcanteen.common.item.Canteen;
 
 @Mixin(AbstractCookingRecipe.class)
-public class MixinCampfireCookingRecipe {
+public class MixinAbstractCookingRecipe {
 
     @Mutable
     @Shadow @Final protected ItemStack result;

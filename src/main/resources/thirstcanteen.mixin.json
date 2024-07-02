@@ -4,7 +4,7 @@
   "compatibilityLevel": "JAVA_17",
   "refmap": "thirstcanteen.refmap.json",
   "mixins": [
-    "MixinCampfireCookingRecipe",
+    "MixinAbstractCookingRecipe",
     "MixinPlayerThirstManager",
     "MixinThirstHelper",
     "MixinThirstTab"
