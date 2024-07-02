@@ -8,9 +8,9 @@ public class FullDragonBottle extends Canteen{
     public FullDragonBottle() {
         super(new Properties()
                 .rarity(Rarity.EPIC)
-                .tab(ThirstTab.THIRST_TAB),12);
-        this.usableTime =12;
+                .tab(ThirstTab.THIRST_TAB),16);
+        this.usableTime =16;
         this.container = ThirstCanteenItem.DRAGON_BOTTLE.get().getDefaultInstance();
-        this.defaultPurity=2;
+        this.defaultPurity= 2;
     }
 }

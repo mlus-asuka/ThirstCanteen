@@ -1,5 +1,5 @@
 {
-  "type": "thirstcanteen:canteen_campfire_cooking",
+  "type": "minecraft:campfire_cooking",
   "ingredient":[
     {
       "item": "thirstcanteen:dragon_bottle_full"

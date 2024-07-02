@@ -1,15 +1,11 @@
 package vip.fubuki.thirstcanteen;
 
 import com.mojang.logging.LogUtils;
-import dev.ghen.thirst.content.purity.ContainerWithPurity;
-import dev.ghen.thirst.content.purity.WaterPurity;
 import dev.ghen.thirst.foundation.common.event.RegisterThirstValueEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -17,8 +13,6 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.slf4j.Logger;
-import vip.fubuki.thirstcanteen.common.crafting.CanteenCampfireRecipeSerializer;
-import vip.fubuki.thirstcanteen.common.crafting.CanteenSmeltingRecipeSerializer;
 import vip.fubuki.thirstcanteen.common.item.Canteen;
 import vip.fubuki.thirstcanteen.config.ThirstCanteenConfig;
 import vip.fubuki.thirstcanteen.registry.ThirstCanteenItem;
@@ -45,7 +39,6 @@ public class ThirstCanteen
     @Mod.EventBusSubscriber
     public static class ListeningEvents
     {
-        private static boolean init = false;
 
         @SubscribeEvent(priority = EventPriority.HIGH)
         public static void onRenderItemTooltips(ItemTooltipEvent event) {
@@ -75,24 +68,9 @@ public class ThirstCanteen
             event.addDrink(ThirstCanteenItem.MILITARY_BOTTLE_FULL.get(),6,8);
             event.addDrink(ThirstCanteenItem.DRAGON_BOTTLE_FULL.get(),6,8);
             event.addDrink(ThirstCanteenItem.LEATHER_CANTEEN_FULL.get(),6,8);
-            WaterPurity.addContainer(new ContainerWithPurity(new ItemStack(ThirstCanteenItem.MILITARY_BOTTLE_FULL.get())));
-            WaterPurity.addContainer(new ContainerWithPurity(new ItemStack(ThirstCanteenItem.DRAGON_BOTTLE_FULL.get())));
-            WaterPurity.addContainer(new ContainerWithPurity(new ItemStack(ThirstCanteenItem.LEATHER_CANTEEN_FULL.get())));
-//            event.addContainer(ThirstCanteenItem.MILITARY_BOTTLE_FULL.get());
-//            event.addContainer(ThirstCanteenItem.DRAGON_BOTTLE_FULL.get());
-//            event.addContainer(ThirstCanteenItem.LEATHER_CANTEEN_FULL.get());
-        }
-    }
-
-    @SuppressWarnings("unused")
-    @Mod.EventBusSubscriber(modid = MODID,bus = Mod.EventBusSubscriber.Bus.MOD)
-    public static class RegistryEvents{
-        @SubscribeEvent
-        public static void registerRecipes(RegistryEvent.Register<RecipeSerializer<?>> event) {
-            event.getRegistry().register(CanteenSmeltingRecipeSerializer.INSTANCE
-                    .setRegistryName("canteen_smelting"));
-            event.getRegistry().register(CanteenCampfireRecipeSerializer.INSTANCE
-                    .setRegistryName("canteen_campfire_cooking"));
+            event.addContainer(ThirstCanteenItem.MILITARY_BOTTLE_FULL.get());
+            event.addContainer(ThirstCanteenItem.DRAGON_BOTTLE_FULL.get());
+            event.addContainer(ThirstCanteenItem.LEATHER_CANTEEN_FULL.get());
         }
     }
 }

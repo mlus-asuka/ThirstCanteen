@@ -1,5 +1,5 @@
 {
-  "type": "thirstcanteen:canteen_smelting",
+  "type": "minecraft:smelting",
   "ingredient":[
     {
       "item": "thirstcanteen:leather_canteen_full"
