@@ -1,13 +1,12 @@
 package vip.fubuki.thirstcanteen.common.item;
 
-import vip.fubuki.thirstcanteen.config.ThirstCanteenConfig;
 import vip.fubuki.thirstcanteen.registry.ThirstCanteenItem;
 
 public class FullMilitaryBottle extends Canteen{
     public FullMilitaryBottle() {
         super(new Properties()
-                , ThirstCanteenConfig.MILITARY_BOTTLE_CONTAIN.get().intValue());
-        this.usableTime = ThirstCanteenConfig.MILITARY_BOTTLE_CONTAIN.get().intValue();
+                , 12);
+        this.usableTime = 12;
         this.container = ThirstCanteenItem.MILITARY_BOTTLE.get().getDefaultInstance();
         this.defaultPurity=0;
     }

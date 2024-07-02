@@ -35,7 +35,6 @@ import org.jetbrains.annotations.NotNull;
 public abstract class Canteen extends Item implements Drinkable{
 
     public int usableTime;
-
     public ItemStack container;
     public int defaultPurity;
     public Canteen(Properties properties,int usableTime) {
@@ -160,13 +159,7 @@ public abstract class Canteen extends Item implements Drinkable{
     }
 
     public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level level, @NotNull Player player, @NotNull InteractionHand interactionHand) {
-//        ItemStack stack = player.getItemInHand(interactionHand);
-//        if(stack.getOrCreateTag().getInt("Contain")<=0){
-//            stack.shrink(1);
-//            spawnItemEntity(level,container,player.getX(),player.getY(),player.getZ(),0,0,0);
-//        }
         player.startUsingItem(interactionHand);
         return InteractionResultHolder.success(player.getItemInHand(interactionHand));
     }
-
 }
