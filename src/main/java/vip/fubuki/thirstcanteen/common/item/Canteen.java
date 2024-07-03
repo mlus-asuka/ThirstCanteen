@@ -162,4 +162,9 @@ public abstract class Canteen extends Item implements Drinkable{
         player.startUsingItem(interactionHand);
         return InteractionResultHolder.success(player.getItemInHand(interactionHand));
     }
+
+    @Override
+    public boolean isEnchantable(@NotNull ItemStack itemStack) {
+        return false;
+    }
 }
