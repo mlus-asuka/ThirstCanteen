@@ -13,8 +13,8 @@ public class ThirstCanteenConfig {
 
     static {
         BUILDER.push("Settings");
-        THIRST_RESTORE_EACH_SIP = BUILDER.define("ThirstRestore",6);
-        QUENCHED_RESTORE_EACH_SIP = BUILDER.define("QuenchedRestore",8);
+        THIRST_RESTORE_EACH_SIP = BUILDER.define("ThirstRestoreEachSip",6);
+        QUENCHED_RESTORE_EACH_SIP = BUILDER.define("QuenchedRestoreEachSip",8);
         SPEC = BUILDER.build();
     }
 
