@@ -10,10 +10,9 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import vip.fubuki.thirstcanteen.common.item.Canteen;
 import vip.fubuki.thirstcanteen.config.ThirstCanteenConfig;
+import vip.fubuki.thirstcanteen.mixin.MixinThirstHelper;
 import vip.fubuki.thirstcanteen.registry.ThirstCanteenItem;
 
 import java.util.List;
@@ -21,7 +20,6 @@ import java.util.List;
 @Mod(ThirstCanteen.MODID)
 public class ThirstCanteen
 {
-    public static final Logger LOGGER = LogManager.getLogger();
     public static final String MODID = "thirstcanteen";
 
     public ThirstCanteen()
@@ -55,21 +53,23 @@ public class ThirstCanteen
 
         public static void setPurity(ItemStack item) {
             if (!item.getOrCreateTag().contains("Purity")) {
-                if(item.is(ThirstCanteenItem.MILITARY_BOTTLE_FULL.get()) || item.is(ThirstCanteenItem.LEATHER_CANTEEN_FULL.get()))
-                    item.getOrCreateTag().putInt("Purity", 0);
-                if(item.is(ThirstCanteenItem.DRAGON_BOTTLE_FULL.get()))
-                    item.getOrCreateTag().putInt("Purity", 2);
+                if(item.getItem() instanceof Canteen canteen){
+                    item.getOrCreateTag().putInt("Purity", canteen.defaultPurity);
+                }
             }
         }
 
+        /** Just make them be recognized as drink, don't mind the detail
+         *  See #{@link MixinThirstHelper}
+         */
         @SubscribeEvent
         public static void registerDrinks(RegisterThirstValueEvent event){
-            event.addDrink(ThirstCanteenItem.MILITARY_BOTTLE_FULL.get(),6,8);
-            event.addDrink(ThirstCanteenItem.DRAGON_BOTTLE_FULL.get(),6,8);
-            event.addDrink(ThirstCanteenItem.LEATHER_CANTEEN_FULL.get(),6,8);
-            event.addContainer(ThirstCanteenItem.MILITARY_BOTTLE_FULL.get());
-            event.addContainer(ThirstCanteenItem.DRAGON_BOTTLE_FULL.get());
-            event.addContainer(ThirstCanteenItem.LEATHER_CANTEEN_FULL.get());
+            ThirstCanteenItem.ITEMS.getEntries().forEach(itemRegistryObject ->{
+                if(itemRegistryObject.get() instanceof Canteen canteen){
+                    event.addDrink(canteen,6,8);
+                    event.addContainer(canteen);
+                }
+            } );
         }
     }
 }

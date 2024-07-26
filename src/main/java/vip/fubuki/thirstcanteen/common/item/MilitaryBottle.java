@@ -12,6 +12,6 @@ public class MilitaryBottle extends EmptyCanteen {
 
     @Override
     public @NotNull InteractionResult useOn(@NotNull UseOnContext context) {
-        return this.useOn(context,ThirstCanteenItem.MILITARY_BOTTLE_FULL.get().getDefaultInstance(),0);
+        return this.useOn(context,ThirstCanteenItem.MILITARY_BOTTLE_FULL.get().getDefaultInstance());
     }
 }

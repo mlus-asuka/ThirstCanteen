@@ -13,6 +13,6 @@ public class LeatherCanteen extends EmptyCanteen {
 
     @Override
     public @NotNull InteractionResult useOn(@NotNull UseOnContext context) {
-        return this.useOn(context,ThirstCanteenItem.LEATHER_CANTEEN_FULL.get().getDefaultInstance(),0);
+        return this.useOn(context,ThirstCanteenItem.LEATHER_CANTEEN_FULL.get().getDefaultInstance());
     }
 }

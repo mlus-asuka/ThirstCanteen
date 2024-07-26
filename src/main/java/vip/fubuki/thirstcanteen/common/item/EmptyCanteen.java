@@ -29,8 +29,7 @@ public class EmptyCanteen extends Item {
         super(properties.stacksTo(1));
     }
 
-
-    public @NotNull InteractionResult useOn(UseOnContext context, ItemStack result, int defaultPurity) {
+    public @NotNull InteractionResult useOn(UseOnContext context, ItemStack result) {
         ItemStack stack = context.getItemInHand();
         Player player = context.getPlayer();
         Level level = player.level();
@@ -39,6 +38,7 @@ public class EmptyCanteen extends Item {
         BlockEntity blockEntity = context.getLevel().getBlockEntity(context.getClickedPos());
         BlockState blockState = context.getLevel().getBlockState(context.getClickedPos());
         int needed = ((Canteen) result.getItem()).getMaxUsableTimes();
+        int defaultPurity = ((Canteen) result.getItem()).defaultPurity;
         boolean handled = false;
 
         if (context.getLevel().getFluidState(blockPos).is(FluidTags.WATER)) {

@@ -37,8 +37,18 @@ public abstract class Canteen extends Item implements Drinkable{
     public int usableTime;
     public ItemStack container;
     public int defaultPurity;
-    public Canteen(Properties properties,int usableTime) {
+    public Canteen(Properties properties,int usableTime, ItemStack container) {
         super(properties.defaultDurability(usableTime));
+        this.usableTime = usableTime;
+        this.defaultPurity = 0;
+        this.container = container;
+    }
+
+    public Canteen(Properties properties, int usableTime, ItemStack container, Integer defaultPurity) {
+        super(properties.defaultDurability(usableTime));
+        this.usableTime = usableTime;
+        this.defaultPurity = defaultPurity==null?0:defaultPurity;
+        this.container = container;
     }
 
     public int getUseDuration(@NotNull ItemStack p_43001_) {

@@ -14,6 +14,6 @@ public class DragonBottle extends EmptyCanteen {
 
     @Override
     public @NotNull InteractionResult useOn(@NotNull UseOnContext context) {
-        return this.useOn(context,ThirstCanteenItem.DRAGON_BOTTLE_FULL.get().getDefaultInstance(),2);
+        return this.useOn(context,ThirstCanteenItem.DRAGON_BOTTLE_FULL.get().getDefaultInstance());
     }
 }

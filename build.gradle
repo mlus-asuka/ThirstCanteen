@@ -139,7 +139,7 @@ dependencies {
 
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
     implementation fg.deobf("curse.maven:thirst-was-taken-679270:5437370")
-    implementation fg.deobf("curse.maven:mekanism-268560:5395221")
+    compileOnly fg.deobf("curse.maven:mekanism-268560:5395221")
 }
 
 
