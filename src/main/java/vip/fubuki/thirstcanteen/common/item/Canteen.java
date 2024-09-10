@@ -129,7 +129,7 @@ public abstract class Canteen extends Item implements Drinkable{
                         break;
                     else {
                         totalAmount+=iFluidHandler.getFluidInTank(i).getAmount();
-                        purity = Math.min(purity,WaterPurity.getPurity(iFluidHandler.getFluidInTank(i)));
+                        purity = WaterPurity.getPurity(iFluidHandler.getFluidInTank(i));
 
                     }
                 }

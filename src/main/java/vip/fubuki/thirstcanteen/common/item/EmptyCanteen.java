@@ -50,11 +50,13 @@ public class EmptyCanteen extends Item {
             if (capability.isPresent()) {
                 IFluidHandler iFluidHandler = capability.orElse(null);
                 int totalAmount = 0;
+                int purity=0;
                 for (int i = 0; i < iFluidHandler.getTanks(); i++) {
                     if (iFluidHandler.getFluidInTank(i).getFluid() != Fluids.WATER)
                         break;
                     else {
                         totalAmount += iFluidHandler.getFluidInTank(i).getAmount();
+                        purity = WaterPurity.getPurity(iFluidHandler.getFluidInTank(i));
                     }
                 }
                 totalAmount = totalAmount / 250;
@@ -63,7 +65,10 @@ public class EmptyCanteen extends Item {
                     return InteractionResult.PASS;
                 iFluidHandler.drain(actual * 250, IFluidHandler.FluidAction.EXECUTE);
                 result.getOrCreateTag().putInt("Damage", Math.max(0, needed - actual));
-                handled=true;
+                stack.shrink(1);
+                WaterPurity.addPurity(result,Math.max(defaultPurity,purity));
+                player.getInventory().add(result);
+                level.playSound(player, player.getX(), player.getY(), player.getZ(), SoundEvents.BOTTLE_FILL, SoundSource.NEUTRAL, 1.0F, 1.0F);
             }
         } else if (blockState.getBlock() instanceof LayeredCauldronBlock) {
             int waterLevel = blockState.getValue(LayeredCauldronBlock.LEVEL);
