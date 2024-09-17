@@ -32,19 +32,19 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.NotNull;
 
-public abstract class Canteen extends Item implements Drinkable{
+public class Canteen extends Item implements Drinkable{
 
     public int usableTime;
-    public ItemStack container;
+    LazyOptional<ItemStack> container;
     public int defaultPurity;
-    public Canteen(Properties properties,int usableTime, ItemStack container) {
+    public Canteen(Properties properties,int usableTime, LazyOptional<ItemStack> container) {
         super(properties.defaultDurability(usableTime));
         this.usableTime = usableTime;
         this.defaultPurity = 0;
         this.container = container;
     }
 
-    public Canteen(Properties properties, int usableTime, ItemStack container, Integer defaultPurity) {
+    public Canteen(Properties properties, int usableTime, LazyOptional<ItemStack> container, Integer defaultPurity) {
         super(properties.defaultDurability(usableTime));
         this.usableTime = usableTime;
         this.defaultPurity = defaultPurity==null?0:defaultPurity;
@@ -89,7 +89,7 @@ public abstract class Canteen extends Item implements Drinkable{
             if (times == 0) {
                 if (!player.getAbilities().instabuild)
                     itemStack.shrink(1);
-                spawnItemEntity(level,container,player.getX(),player.getY(), player.getZ(), 0,0,0);
+                spawnItemEntity(level,container.resolve().get().copy(),player.getX(),player.getY(), player.getZ(), 0,0,0);
             }
         }
         if(player != null)

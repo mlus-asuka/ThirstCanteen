@@ -1,6 +1,8 @@
 package vip.fubuki.thirstcanteen.registry;
 
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Rarity;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
@@ -20,12 +22,12 @@ public class ThirstCanteenItem {
 
     static {
         ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, "thirstcanteen");
-        MILITARY_BOTTLE = ITEMS.register("military_bottle", MilitaryBottle::new);
-        MILITARY_BOTTLE_FULL = ITEMS.register("military_bottle_full", FullMilitaryBottle::new);
-        DRAGON_BOTTLE = ITEMS.register("dragon_bottle", DragonBottle::new);
-        DRAGON_BOTTLE_FULL = ITEMS.register("dragon_bottle_full", FullDragonBottle::new);
-        LEATHER_CANTEEN = ITEMS.register("leather_canteen", LeatherCanteen::new);
-        LEATHER_CANTEEN_FULL = ITEMS.register("leather_canteen_full",FullLeatherCanteen::new);
+        MILITARY_BOTTLE = ITEMS.register("military_bottle",()->new EmptyCanteen(new Item.Properties(), LazyOptional.of(()->ThirstCanteenItem.MILITARY_BOTTLE_FULL.get().getDefaultInstance())));
+        MILITARY_BOTTLE_FULL = ITEMS.register("military_bottle_full", ()-> new Canteen(new Item.Properties(),12, LazyOptional.of(()->ThirstCanteenItem.MILITARY_BOTTLE.get().getDefaultInstance())));
+        DRAGON_BOTTLE = ITEMS.register("dragon_bottle", ()->new EmptyCanteen(new Item.Properties().rarity(Rarity.EPIC), LazyOptional.of(()->ThirstCanteenItem.DRAGON_BOTTLE_FULL.get().getDefaultInstance())));
+        DRAGON_BOTTLE_FULL = ITEMS.register("dragon_bottle_full",()-> new Canteen(new Item.Properties().rarity(Rarity.EPIC),16, LazyOptional.of(()->ThirstCanteenItem.DRAGON_BOTTLE.get().getDefaultInstance()) ,2));
+        LEATHER_CANTEEN = ITEMS.register("leather_canteen", ()-> new EmptyCanteen(new Item.Properties(), LazyOptional.of(()->ThirstCanteenItem.LEATHER_CANTEEN_FULL.get().getDefaultInstance())));
+        LEATHER_CANTEEN_FULL = ITEMS.register("leather_canteen_full",()-> new Canteen(new Item.Properties(),8, LazyOptional.of(()->ThirstCanteenItem.LEATHER_CANTEEN.get().getDefaultInstance())));
     }
 
 }

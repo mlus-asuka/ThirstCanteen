@@ -43,19 +43,10 @@ public class ThirstCanteen
             if(stack.getItem() instanceof Canteen canteen){
                 List<Component> tooltip = event.getToolTip();
                 tooltip.add(Component.translatable("tooltips.drinkable",canteen.getLeftUsableTimes(stack),canteen.usableTime));
-                setPurity(event.getItemStack());
             }
 
             if(stack.is(ThirstCanteenItem.LEATHER_CANTEEN.get())){
                 event.getToolTip().add(Component.nullToEmpty("Thanks SquARzY for drawing this."));
-            }
-        }
-
-        public static void setPurity(ItemStack item) {
-            if (!item.getOrCreateTag().contains("Purity")) {
-                if(item.getItem() instanceof Canteen canteen){
-                    item.getOrCreateTag().putInt("Purity", canteen.defaultPurity);
-                }
             }
         }
 

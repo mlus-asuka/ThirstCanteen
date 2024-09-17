@@ -24,12 +24,16 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.NotNull;
 
 public class EmptyCanteen extends Item {
+    LazyOptional<ItemStack> container;
 
-    public EmptyCanteen(Properties properties) {
+    public EmptyCanteen(Properties properties,LazyOptional<ItemStack> container) {
         super(properties.stacksTo(1));
+        this.container=container;
     }
 
-    public @NotNull InteractionResult useOn(UseOnContext context, ItemStack result) {
+    @Override
+    public @NotNull InteractionResult useOn(UseOnContext context) {
+        ItemStack result = container.resolve().get().copy();
         ItemStack stack = context.getItemInHand();
         Player player = context.getPlayer();
         Level level = player.level();
