@@ -29,7 +29,6 @@ public class MixinAbstractCookingRecipe {
         if(cir.getReturnValue() && container.getItem(0).getItem() instanceof Canteen){
             if(container.getItem(0).getOrCreateTag().getInt("Purity")==3){
                 cir.setReturnValue(false);
-                return;
             }
             result = CanteenRecipeAssembler.assemble(container.getItem(0),result,type);
         }

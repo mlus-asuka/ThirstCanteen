@@ -121,11 +121,11 @@ repositories {
         url "https://cursemaven.com"
     }
 
-    maven {
-        name = "TeamPancake"
-        url = "http://rm.fubuki.vip:8081/repository/maven-releases/"
-        allowInsecureProtocol = true
-    }
+//    maven {
+//        name = "TeamPancake"
+//        url = "http://rm.fubuki.vip:8081/repository/maven-releases/"
+//        allowInsecureProtocol = true
+//    }
 }
 
 mixin {
@@ -135,10 +135,10 @@ mixin {
 
 dependencies {
 
-    minecraft 'net.minecraftforge:forge:1.20.1-47.1.0'
+    minecraft 'net.minecraftforge:forge:1.20.1-47.3.0'
 
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
-    implementation fg.deobf("curse.maven:thirst-was-taken-679270:5437370")
+    implementation fg.deobf("curse.maven:thirst-was-taken-679270:5853064")
     compileOnly fg.deobf("curse.maven:mekanism-268560:5395221")
 }
 

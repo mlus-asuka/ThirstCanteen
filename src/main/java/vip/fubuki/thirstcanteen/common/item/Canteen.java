@@ -13,7 +13,6 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -69,12 +68,6 @@ public class Canteen extends Item implements Drinkable{
         return usableTime - itemStack.getDamageValue();
     }
 
-    public static void spawnItemEntity(Level level, ItemStack stack, double x, double y, double z, double xMotion, double yMotion, double zMotion) {
-        ItemEntity entity = new ItemEntity(level, x, y, z, stack);
-        entity.setDeltaMovement(xMotion, yMotion, zMotion);
-        level.addFreshEntity(entity);
-    }
-
     @Override
     public @NotNull ItemStack finishUsingItem(@NotNull ItemStack itemStack, @NotNull Level level, @NotNull LivingEntity entity) {
         Player player = entity instanceof Player ? (Player)entity : null;
@@ -89,7 +82,11 @@ public class Canteen extends Item implements Drinkable{
             if (times == 0) {
                 if (!player.getAbilities().instabuild)
                     itemStack.shrink(1);
-                spawnItemEntity(level,container.resolve().get().copy(),player.getX(),player.getY(), player.getZ(), 0,0,0);
+
+                ItemStack stack = container.resolve().get().copy();
+                if (!player.getInventory().add(stack)) {
+                    player.drop(stack, false);
+                }
             }
         }
         if(player != null)
@@ -155,7 +152,7 @@ public class Canteen extends Item implements Drinkable{
             level.setBlockAndUpdate(context.getClickedPos(),blockState);
 
             stack.getOrCreateTag().putInt("Damage",Math.max(0,needed - waterLevel));
-            handled=true;
+            handled = true;
         }else {
             player.startUsingItem(context.getHand());
         }
