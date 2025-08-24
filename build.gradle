@@ -19,7 +19,7 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'org.spongepowered.mixin'
 
 
-version = '1.20.1-2.0'
+version = '1.20.1-3.0'
 group = 'vip.fubuki.thirstcanteen'
 archivesBaseName = 'thirstcanteen'
 
@@ -139,6 +139,7 @@ dependencies {
 
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
     implementation fg.deobf("curse.maven:thirst-was-taken-679270:6328470")
+    implementation fg.deobf("curse.maven:legendary-survival-overhaul-840254:6583843")
     compileOnly fg.deobf("curse.maven:mekanism-268560:5395221")
 }
 

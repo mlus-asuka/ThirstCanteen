@@ -13,6 +13,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import vip.fubuki.thirstcanteen.ThirstCanteen;
 import vip.fubuki.thirstcanteen.common.item.Canteen;
 import vip.fubuki.thirstcanteen.util.CanteenRecipeAssembler;
 
@@ -27,7 +28,7 @@ public class MixinAbstractCookingRecipe {
     @Inject(method = "matches", at =@At("TAIL"), cancellable = true)
     public void matches(Container container, Level level, CallbackInfoReturnable<Boolean> cir){
         if(cir.getReturnValue() && container.getItem(0).getItem() instanceof Canteen){
-            if(container.getItem(0).getOrCreateTag().getInt("Purity")==3){
+            if(ThirstCanteen.thirstLoaded && container.getItem(0).getOrCreateTag().getInt("Purity") == 3){
                 cir.setReturnValue(false);
             }
             result = CanteenRecipeAssembler.assemble(container.getItem(0),result,type);
