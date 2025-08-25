@@ -96,10 +96,8 @@ configurations {
 dependencies {
     implementation "net.neoforged:neoforge:${neo_version}"
 
-    implementation "curse.maven:thirst-was-taken-679270:6490040"
-    runtimeOnly "curse.maven:jade-324717:5427817"
-    runtimeOnly "curse.maven:appleskin-248787:5429756"
-
+    implementation "curse.maven:thirst-was-taken-679270:6759289"
+    implementation "curse.maven:appleskin-248787:6616291"
 }
 
 //mixin {

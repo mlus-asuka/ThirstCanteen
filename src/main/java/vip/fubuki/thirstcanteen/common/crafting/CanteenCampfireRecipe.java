@@ -2,7 +2,6 @@ package vip.fubuki.thirstcanteen.common.crafting;
 
 import dev.ghen.thirst.content.registry.ThirstComponent;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
 import org.jetbrains.annotations.NotNull;
@@ -19,14 +18,16 @@ public class CanteenCampfireRecipe extends CampfireCookingRecipe {
         ItemStack stack = recipeInput.item();
         if(stack.get(ThirstComponent.PURITY)==null){
             if(stack.getItem() instanceof Canteen canteen)
-                stack.set(ThirstComponent.PURITY,canteen.defaultPurity);
+                stack.set(ThirstComponent.PURITY,canteen.getDefaultPurity());
         }
         int purity = Math.min(stack.get(ThirstComponent.PURITY)+1,3);
 
         ItemStack result = this.result.copy();
 
         result.set(ThirstComponent.PURITY,purity);
-        result.set(DataComponents.DAMAGE,stack.getDamageValue());
+        if(stack.getItem() instanceof Canteen canteen){
+            Canteen.setContain(result,canteen.getLeftUsableTimes(stack));
+        }
 
         return result;
     }

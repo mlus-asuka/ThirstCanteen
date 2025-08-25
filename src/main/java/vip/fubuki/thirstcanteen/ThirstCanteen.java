@@ -45,7 +45,7 @@ public class ThirstCanteen
         ItemStack stack = event.getItemStack();
         if(stack.getItem() instanceof Canteen canteen){
             List<Component> tooltip = event.getToolTip();
-            tooltip.add(Component.translatable("tooltips.drinkable",canteen.getLeftUsableTimes(stack),canteen.usableTime));
+            tooltip.add(Component.translatable("tooltips.drinkable",canteen.getLeftUsableTimes(stack),canteen.getMaxUsableTimes()));
             setPurity(event.getItemStack());
         }
 
@@ -65,11 +65,11 @@ public class ThirstCanteen
 
     @SubscribeEvent
     public void registerDrinks(RegisterThirstValueEvent event){
-        event.addDrink(ThirstCanteenItem.MILITARY_BOTTLE_FULL.get(),6,8);
-        event.addDrink(ThirstCanteenItem.DRAGON_BOTTLE_FULL.get(),6,8);
-        event.addDrink(ThirstCanteenItem.LEATHER_CANTEEN_FULL.get(),6,8);
-        event.addContainer(ThirstCanteenItem.MILITARY_BOTTLE_FULL.get());
-        event.addContainer(ThirstCanteenItem.DRAGON_BOTTLE_FULL.get());
-        event.addContainer(ThirstCanteenItem.LEATHER_CANTEEN_FULL.get());
+        ThirstCanteenItem.ITEMS.getEntries().forEach(itemRegistryObject ->{
+            if(itemRegistryObject.get() instanceof Canteen canteen){
+                event.addDrink(canteen, ThirstCanteenConfig.THIRST_RESTORE_EACH_SIP.get().intValue(),ThirstCanteenConfig.QUENCHED_RESTORE_EACH_SIP.get().intValue());
+                event.addContainer(canteen);
+            }
+        } );
     }
 }
