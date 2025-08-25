@@ -11,6 +11,7 @@ import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import vip.fubuki.thirstcanteen.common.item.Canteen;
+import vip.fubuki.thirstcanteen.compat.ThirstCompatEvent;
 import vip.fubuki.thirstcanteen.config.ThirstCanteenConfig;
 import vip.fubuki.thirstcanteen.registry.ThirstCanteenItem;
 
@@ -33,7 +34,7 @@ public class ThirstCanteen
 
         if(ModList.get().isLoaded("thirst")){
             thirstLoaded = true;
-            MinecraftForge.EVENT_BUS.register(modBus);
+            ThirstCompatEvent.register(MinecraftForge.EVENT_BUS);
         }
 
         if(ModList.get().isLoaded("legendarysurvivaloverhaul")){

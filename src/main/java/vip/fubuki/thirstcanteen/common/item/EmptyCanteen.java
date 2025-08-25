@@ -24,17 +24,19 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.NotNull;
 import vip.fubuki.thirstcanteen.ThirstCanteen;
 
-public class EmptyCanteen extends Item {
-    LazyOptional<ItemStack> container;
+import java.util.function.Supplier;
 
-    public EmptyCanteen(Properties properties,LazyOptional<ItemStack> container) {
+public class EmptyCanteen extends Item {
+    Supplier<ItemStack> container;
+
+    public EmptyCanteen(Properties properties,Supplier<ItemStack> container) {
         super(properties.stacksTo(1));
         this.container = container;
     }
 
     @Override
     public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level level, @NotNull Player player, @NotNull InteractionHand interactionHand) {
-        ItemStack result = container.resolve().get().copy();
+        ItemStack result = container.get().copy();
         ItemStack stack = player.getItemInHand(interactionHand);
 
         BlockHitResult blockHitResult = getPlayerPOVHitResult(level, player, ClipContext.Fluid.SOURCE_ONLY);
@@ -100,10 +102,10 @@ public class EmptyCanteen extends Item {
             //
             if(ThirstCanteen.thirstLoaded)
                 WaterPurity.addPurity(result, Math.max(defaultPurity, WaterPurity.getBlockPurity(level, blockPos)));
-            player.getInventory().add(result);
+            player.setItemInHand(interactionHand, result);
             level.playSound(player, player.getX(), player.getY(), player.getZ(), SoundEvents.BOTTLE_FILL, SoundSource.NEUTRAL, 1.0F, 1.0F);
         }
 
-        return InteractionResultHolder.success(stack);
+        return InteractionResultHolder.success(result);
     }
 }

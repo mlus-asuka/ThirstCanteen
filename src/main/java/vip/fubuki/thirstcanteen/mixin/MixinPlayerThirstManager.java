@@ -16,7 +16,7 @@ import vip.fubuki.thirstcanteen.config.ThirstCanteenConfig;
 
 @Mixin(value = PlayerThirstManager.class,remap = false)
 public class MixinPlayerThirstManager {
-    @Inject(method = "drink",at= @At(value = "HEAD"))
+    @Inject(method = "drink",at= @At(value = "HEAD"), cancellable = true)
     private static void getThirst(LivingEntityUseItemEvent.Finish event, CallbackInfo ci){
         if (event.getEntity() instanceof Player && ThirstHelper.itemRestoresThirst(event.getItem())) {
             event.getEntity().getCapability(ModCapabilities.PLAYER_THIRST).ifPresent((cap) -> {
@@ -25,6 +25,7 @@ public class MixinPlayerThirstManager {
                     if (WaterPurity.givePurityEffects((Player)event.getEntity(), item)) {
                         cap.drink((Player)event.getEntity(), ThirstCanteenConfig.THIRST_RESTORE_EACH_SIP.get().intValue(), ThirstCanteenConfig.QUENCHED_RESTORE_EACH_SIP.get().intValue());
                     }
+                    ci.cancel();
                 }
             });
         }

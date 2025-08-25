@@ -12,9 +12,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.UseAnim;
+import net.minecraft.world.item.*;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
@@ -32,20 +30,19 @@ import sfiomn.legendarysurvivaloverhaul.common.capabilities.thirst.ThirstProvide
 import vip.fubuki.thirstcanteen.ThirstCanteen;
 import vip.fubuki.thirstcanteen.config.ThirstCanteenConfig;
 
+import java.util.function.Supplier;
+
 public class Canteen extends Item implements Drinkable{
 
-    LazyOptional<Integer> usableTime;
-    LazyOptional<ItemStack> container;
-    public LazyOptional<Integer> defaultPurity;
-    public Canteen(Properties properties, LazyOptional<Integer> usableTime, LazyOptional<ItemStack> container) {
-        super(properties);
-        this.usableTime = usableTime;
-        this.defaultPurity = LazyOptional.of(() -> 0);
-        this.container = container;
+    Supplier<Integer> usableTime;
+    Supplier<ItemStack> container;
+    Supplier<Integer> defaultPurity;
+    public Canteen(Properties properties, Supplier<Integer> usableTime, Supplier<ItemStack> container) {
+        this(properties, usableTime, container, () -> 0);
     }
 
-    public Canteen(Properties properties,  LazyOptional<Integer> usableTime, LazyOptional<ItemStack> container, LazyOptional<Integer> defaultPurity) {
-        super(properties);
+    public Canteen(Properties properties,  Supplier<Integer> usableTime, Supplier<ItemStack> container, Supplier<Integer> defaultPurity) {
+        super(properties.stacksTo(1));
         this.usableTime = usableTime;
         this.defaultPurity = defaultPurity;
         this.container = container;
@@ -61,7 +58,7 @@ public class Canteen extends Item implements Drinkable{
 
     @Override
     public int getMaxUsableTimes() {
-        return usableTime.orElse(8);
+        return usableTime.get();
     }
 
     @Override
@@ -70,7 +67,7 @@ public class Canteen extends Item implements Drinkable{
     }
 
     public int getDefaultPurity(){
-        return Math.min(defaultPurity.orElse(0), 3);
+        return Math.min(defaultPurity.get(), 3);
     }
 
     @Override
@@ -78,31 +75,32 @@ public class Canteen extends Item implements Drinkable{
         Player player = entity instanceof Player ? (Player)entity : null;
         if(player instanceof ServerPlayer serverPlayer) {
             CriteriaTriggers.CONSUME_ITEM.trigger(serverPlayer, itemStack);
-            level.gameEvent(entity, GameEvent.EAT, entity.getOnPos());
-            serverPlayer.getFoodData().eat(0,0);
+        }
 
-            if(ThirstCanteen.legendSurvivalOverhaulLoaded){
-                player.getCapability(ThirstProvider.THIRST_CAPABILITY).ifPresent((thirstCapability -> {
-                    thirstCapability.addHydrationLevel(ThirstCanteenConfig.THIRST_RESTORE_EACH_SIP.get().intValue());
-                    thirstCapability.addSaturationLevel(ThirstCanteenConfig.QUENCHED_RESTORE_EACH_SIP.get().intValue());
-                }));
-            }
+        if(ThirstCanteen.legendSurvivalOverhaulLoaded){
+            player.getCapability(ThirstProvider.THIRST_CAPABILITY).ifPresent((thirstCapability -> {
+                thirstCapability.addHydrationLevel(ThirstCanteenConfig.THIRST_RESTORE_EACH_SIP.get().intValue());
+                thirstCapability.addSaturationLevel(ThirstCanteenConfig.QUENCHED_RESTORE_EACH_SIP.get().intValue());
+            }));
+        }
 
-            itemStack.getOrCreateTag().putInt("Contain", Math.max(0, getLeftUsableTimes(itemStack) - 1));
+        itemStack.getOrCreateTag().putInt("Contain", Math.max(0, getLeftUsableTimes(itemStack) - 1));
+        int times = getLeftUsableTimes(itemStack);
 
-            int times = getLeftUsableTimes(itemStack);
-            if (times == 0) {
-                if (!player.getAbilities().instabuild)
-                    itemStack.shrink(1);
+        if (player != null) {
+            player.awardStat(Stats.ITEM_USED.get(this));
+            if (times == 0 && !player.getAbilities().instabuild) {
+                ItemStack containerStack = new ItemStack(container.get().getItem());
 
-                ItemStack stack = container.resolve().get().copy();
-                if (!player.getInventory().add(stack)) {
-                    player.drop(stack, false);
+                if (containerStack.isEmpty() || !player.getInventory().add(containerStack)) {
+                    player.drop(containerStack, false);
                 }
+                itemStack.shrink(1);
+                return itemStack;
             }
         }
-        if(player != null)
-            player.awardStat(Stats.ITEM_USED.get(this));
+
+        player.gameEvent(GameEvent.DRINK);
         return itemStack;
     }
 
@@ -181,10 +179,5 @@ public class Canteen extends Item implements Drinkable{
         }
 
         return InteractionResultHolder.success(player.getItemInHand(interactionHand));
-    }
-
-    @Override
-    public boolean isEnchantable(@NotNull ItemStack itemStack) {
-        return false;
     }
 }

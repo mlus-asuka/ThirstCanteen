@@ -20,6 +20,7 @@ public class MixinThirstTab {
             ItemStack itemStack = itemRegistryObject.get().getDefaultInstance();
             if(itemStack.getItem() instanceof Canteen canteen){
                 itemStack.getOrCreateTag().putInt("Contain", canteen.getMaxUsableTimes());
+                itemStack.getOrCreateTag().putInt("Purity", canteen.getDefaultPurity());
             }
             items.add(itemStack);
                 });
