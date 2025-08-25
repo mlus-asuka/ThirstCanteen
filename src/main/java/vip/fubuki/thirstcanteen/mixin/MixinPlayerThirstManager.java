@@ -26,8 +26,8 @@ public class MixinPlayerThirstManager {
                 if (WaterPurity.givePurityEffects((Player)event.getEntity(), item)) {
                     cap.drink(ThirstCanteenConfig.THIRST_RESTORE_EACH_SIP.get().intValue(), ThirstCanteenConfig.QUENCHED_RESTORE_EACH_SIP.get().intValue());
                 }
+                ci.cancel();
             }
-            ci.cancel();
         }
     }
 }
