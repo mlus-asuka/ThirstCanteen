@@ -49,14 +49,14 @@ public class EmptyCanteen extends Item {
 
         if (level.getFluidState(blockPos).is(FluidTags.WATER)) {
             result.getOrCreateTag().putInt("Contain", needed);
-            handled=true;
+            handled = true;
         } else if(blockEntity != null){
             //Handle with Fluid Capability
             LazyOptional<IFluidHandler> capability = blockEntity.getCapability(ForgeCapabilities.FLUID_HANDLER);
             if (capability.isPresent()) {
                 IFluidHandler iFluidHandler = capability.orElse(null);
                 int totalAmount = 0;
-                int purity=0;
+                int purity = 0;
                 for (int i = 0; i < iFluidHandler.getTanks(); i++) {
                     if (iFluidHandler.getFluidInTank(i).getFluid() != Fluids.WATER)
                         break;
@@ -83,7 +83,7 @@ public class EmptyCanteen extends Item {
         } else if (blockState.getBlock() instanceof LayeredCauldronBlock) {
             int waterLevel = blockState.getValue(LayeredCauldronBlock.LEVEL);
             int actual = Math.min(needed,waterLevel);
-            if(actual<=0)
+            if(actual <= 0)
                 return InteractionResultHolder.pass(stack);
             if (waterLevel - actual > 0) {
                 blockState.setValue(LayeredCauldronBlock.LEVEL, waterLevel-actual);
@@ -94,7 +94,7 @@ public class EmptyCanteen extends Item {
 
 
             result.getOrCreateTag().putInt("Contain",Math.min(needed,actual));
-            handled=true;
+            handled = true;
         }
 
         if(handled){
@@ -104,8 +104,9 @@ public class EmptyCanteen extends Item {
                 WaterPurity.addPurity(result, Math.max(defaultPurity, WaterPurity.getBlockPurity(level, blockPos)));
             player.setItemInHand(interactionHand, result);
             level.playSound(player, player.getX(), player.getY(), player.getZ(), SoundEvents.BOTTLE_FILL, SoundSource.NEUTRAL, 1.0F, 1.0F);
+            return InteractionResultHolder.success(result);
         }
 
-        return InteractionResultHolder.success(result);
+        return InteractionResultHolder.pass(stack);
     }
 }
