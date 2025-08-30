@@ -47,7 +47,7 @@ public class Canteen extends Item implements Drinkable{
     }
 
     public Canteen(Properties properties, Supplier<Integer> usableTime, Supplier<ItemStack> container) {
-        this(properties, usableTime, container, ()-> 0);
+        this(properties.stacksTo(1), usableTime, container, ()-> 0);
     }
 
     @Override

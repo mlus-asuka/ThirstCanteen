@@ -88,6 +88,7 @@ public class EmptyCanteen extends Item {
             player.setItemInHand(usedHand,result);
             WaterPurity.addPurity(result, Math.max(defaultPurity, WaterPurity.getBlockPurity(level, blockPos)));
             level.playSound(player, player.getX(), player.getY(), player.getZ(), SoundEvents.BOTTLE_FILL, SoundSource.NEUTRAL, 1.0F, 1.0F);
+            return InteractionResultHolder.success(result);
         }
         return InteractionResultHolder.success(result);
     }
