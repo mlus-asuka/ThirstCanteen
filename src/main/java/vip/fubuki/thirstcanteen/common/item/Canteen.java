@@ -87,14 +87,16 @@ public class Canteen extends Item implements Drinkable{
             setContain(itemStack,getLeftUsableTimes(itemStack) - 1);
 
             int times = getLeftUsableTimes(itemStack);
-            if (times == 0) {
-                if (!player.getAbilities().instabuild)
-                    itemStack.shrink(1);
 
-                ItemStack stack = container.get().copy();
-                if (!player.getInventory().add(stack)) {
-                    player.drop(stack, false);
+            player.awardStat(Stats.ITEM_USED.get(this));
+            if (times == 0 && !player.getAbilities().instabuild) {
+                ItemStack containerStack = new ItemStack(container.get().getItem());
+
+                if (containerStack.isEmpty() || !player.getInventory().add(containerStack)) {
+                    player.drop(containerStack, false);
                 }
+                itemStack.shrink(1);
+                return itemStack;
             }
         }
         if(player != null)
