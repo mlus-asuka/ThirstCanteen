@@ -70,7 +70,7 @@ public class EmptyCanteen extends Item {
         } else if (blockState.getBlock() instanceof LayeredCauldronBlock) {
             int waterLevel = blockState.getValue(LayeredCauldronBlock.LEVEL);
             int actual = Math.min(needed,waterLevel);
-            if(actual<=0)
+            if(actual <= 0)
                 return InteractionResultHolder.pass(stack);
             if (waterLevel - actual > 0) {
                 blockState.setValue(LayeredCauldronBlock.LEVEL, waterLevel-actual);
@@ -90,6 +90,6 @@ public class EmptyCanteen extends Item {
             level.playSound(player, player.getX(), player.getY(), player.getZ(), SoundEvents.BOTTLE_FILL, SoundSource.NEUTRAL, 1.0F, 1.0F);
             return InteractionResultHolder.success(result);
         }
-        return InteractionResultHolder.success(result);
+        return InteractionResultHolder.pass(stack);
     }
 }
