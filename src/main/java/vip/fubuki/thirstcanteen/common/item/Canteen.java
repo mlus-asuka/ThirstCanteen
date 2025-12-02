@@ -30,6 +30,9 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.NotNull;
+import sfiomn.legendarysurvivaloverhaul.common.attachments.ModAttachments;
+import vip.fubuki.thirstcanteen.ThirstCanteen;
+import vip.fubuki.thirstcanteen.config.ThirstCanteenConfig;
 
 import java.util.function.Supplier;
 
@@ -84,6 +87,11 @@ public class Canteen extends Item implements Drinkable{
             serverPlayer.gameEvent(GameEvent.EAT);
             serverPlayer.getFoodData().eat(0,0);
 
+            if(ThirstCanteen.legendSurvivalOverhaulLoaded){
+                player.getData(ModAttachments.THIRST).addHydrationLevel(ThirstCanteenConfig.THIRST_RESTORE_EACH_SIP.get().intValue());
+                player.getData(ModAttachments.THIRST).addSaturationLevel(ThirstCanteenConfig.QUENCHED_RESTORE_EACH_SIP.get().intValue());
+            }
+
             setContain(itemStack,getLeftUsableTimes(itemStack) - 1);
 
             int times = getLeftUsableTimes(itemStack);
@@ -135,7 +143,9 @@ public class Canteen extends Item implements Drinkable{
                         break;
                     else {
                         totalAmount+=iFluidHandler.getFluidInTank(i).getAmount();
-                        purity = Math.min(purity,WaterPurity.getPurity(iFluidHandler.getFluidInTank(i)));
+                        //
+                        if(ThirstCanteen.thirstLoaded)
+                            purity = WaterPurity.getPurity(iFluidHandler.getFluidInTank(i));
 
                     }
                 }
@@ -145,7 +155,8 @@ public class Canteen extends Item implements Drinkable{
                     return InteractionResultHolder.pass(stack);
                 iFluidHandler.drain(actual * 250, IFluidHandler.FluidAction.EXECUTE);
                 setContain(stack,Math.min(getMaxUsableTimes() , needed + actual));
-                WaterPurity.addPurity(stack,Math.min(Math.max(getDefaultPurity(), purity), WaterPurity.getPurity(stack)));
+                if(ThirstCanteen.thirstLoaded)
+                    WaterPurity.addPurity(stack,Math.min(Math.max(getDefaultPurity(), purity), WaterPurity.getPurity(stack)));
                 level.playSound(player, player.getX(), player.getY(), player.getZ(), SoundEvents.BOTTLE_FILL, SoundSource.NEUTRAL, 1.0F, 1.0F);
             }
         } else if (blockState.getBlock() instanceof LayeredCauldronBlock) {
@@ -167,7 +178,9 @@ public class Canteen extends Item implements Drinkable{
         }
 
         if(handled){
-            WaterPurity.addPurity(stack,Math.min(Math.max(getDefaultPurity(), WaterPurity.getBlockPurity(level,blockPos)),WaterPurity.getPurity(stack)));
+            //
+            if(ThirstCanteen.thirstLoaded)
+                WaterPurity.addPurity(stack,Math.min(Math.max(getDefaultPurity(), WaterPurity.getBlockPurity(level,blockPos)),WaterPurity.getPurity(stack)));
             level.playSound(player, player.getX(), player.getY(), player.getZ(), SoundEvents.BOTTLE_FILL, SoundSource.NEUTRAL, 1.0F, 1.0F);
         }
 

@@ -20,6 +20,7 @@ import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.NotNull;
+import vip.fubuki.thirstcanteen.ThirstCanteen;
 
 import java.util.function.Supplier;
 
@@ -34,7 +35,7 @@ public class EmptyCanteen extends Item {
 
     @Override
     public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level level, @NotNull Player player, @NotNull InteractionHand usedHand) {
-        ItemStack result = container.get();
+        ItemStack result = container.get().copy();
         ItemStack stack = player.getItemInHand(usedHand);
 
         BlockPos blockPos = getPlayerPOVHitResult(level, player, ClipContext.Fluid.ANY).getBlockPos();
@@ -64,7 +65,7 @@ public class EmptyCanteen extends Item {
                 if (actual <= 0)
                     return InteractionResultHolder.pass(stack);
                 iFluidHandler.drain(actual * 250, IFluidHandler.FluidAction.EXECUTE);
-                Canteen.setContain(result,Math.min(needed, actual));
+                Canteen.setContain(result, Math.min(needed, actual));
                 handled = true;
             }
         } else if (blockState.getBlock() instanceof LayeredCauldronBlock) {
@@ -86,7 +87,8 @@ public class EmptyCanteen extends Item {
         if(handled){
             stack.shrink(1);
             player.setItemInHand(usedHand,result);
-            WaterPurity.addPurity(result, Math.max(defaultPurity, WaterPurity.getBlockPurity(level, blockPos)));
+            if(ThirstCanteen.thirstLoaded)
+                WaterPurity.addPurity(result, Math.max(defaultPurity, WaterPurity.getBlockPurity(level, blockPos)));
             level.playSound(player, player.getX(), player.getY(), player.getZ(), SoundEvents.BOTTLE_FILL, SoundSource.NEUTRAL, 1.0F, 1.0F);
             return InteractionResultHolder.success(result);
         }

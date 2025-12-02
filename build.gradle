@@ -98,6 +98,7 @@ dependencies {
 
     implementation "curse.maven:thirst-was-taken-679270:6759289"
     implementation "curse.maven:appleskin-248787:6616291"
+    implementation "curse.maven:legendary-survival-overhaul-840254:7278267"
 }
 
 //mixin {
