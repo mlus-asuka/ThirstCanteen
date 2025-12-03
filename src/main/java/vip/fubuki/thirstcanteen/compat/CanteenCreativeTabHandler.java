@@ -1,0 +1,35 @@
+package vip.fubuki.thirstcanteen.compat;
+
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
+import vip.fubuki.thirstcanteen.common.item.Canteen;
+import vip.fubuki.thirstcanteen.registry.ThirstCanteenItem;
+
+@EventBusSubscriber
+public class CanteenCreativeTabHandler {
+    @SubscribeEvent
+    public static void addCreative(BuildCreativeModeTabContentsEvent event) {
+        if(event.getTabKey() == ResourceKey.create(Registries.CREATIVE_MODE_TAB, ResourceLocation.fromNamespaceAndPath("legendarysurvivaloverhaul","legendary_creatures"))){
+            addCanteens(event);
+        }
+
+        if (event.getTabKey() == ResourceKey.create(Registries.CREATIVE_MODE_TAB, ResourceLocation.fromNamespaceAndPath("thirst","thirst"))) {
+            addCanteens(event);
+        }
+    }
+
+    private static void addCanteens(BuildCreativeModeTabContentsEvent event) {
+        ThirstCanteenItem.ITEMS.getEntries().forEach(itemRegistryObject -> {
+            ItemStack itemStack = itemRegistryObject.get().getDefaultInstance();
+            if(itemStack.getItem() instanceof Canteen canteen){
+                Canteen.setContain(itemStack,canteen.getMaxUsableTimes());
+            }
+            event.accept(itemStack);
+        });
+    }
+}

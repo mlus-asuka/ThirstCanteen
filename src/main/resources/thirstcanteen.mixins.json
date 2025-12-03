@@ -5,8 +5,7 @@
   "refmap": "thirstcanteen.refmap.json",
   "mixins": [
     "MixinPlayerThirstManager",
-    "MixinThirstHelper",
-    "MixinThirstTab"
+    "MixinThirstHelper"
   ],
   "client": [
   ],
