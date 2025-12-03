@@ -7,7 +7,6 @@
     "MixinAbstractCookingRecipe",
     "MixinPlayerThirstManager",
     "MixinThirstHelper",
-    "MixinThirstTab",
     "mek.MixinItemStackToItemStackRecipe"
   ],
   "client": [
