@@ -7,6 +7,7 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
+import vip.fubuki.thirstcanteen.ThirstCanteen;
 import vip.fubuki.thirstcanteen.common.item.Canteen;
 import vip.fubuki.thirstcanteen.registry.ThirstCanteenItem;
 
@@ -28,6 +29,8 @@ public class CanteenCreativeTabHandler {
             ItemStack itemStack = itemRegistryObject.get().getDefaultInstance();
             if(itemStack.getItem() instanceof Canteen canteen){
                 Canteen.setContain(itemStack,canteen.getMaxUsableTimes());
+                if(ThirstCanteen.thirstLoaded)
+                    ThirstCanteen.setPurity(itemStack);
             }
             event.accept(itemStack);
         });

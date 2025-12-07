@@ -55,7 +55,9 @@ public class ThirstCanteen
         if(stack.getItem() instanceof Canteen canteen){
             List<Component> tooltip = event.getToolTip();
             tooltip.add(Component.translatable("tooltips.drinkable",canteen.getLeftUsableTimes(stack),canteen.getMaxUsableTimes()));
-            setPurity(event.getItemStack());
+
+            if(thirstLoaded)
+                setPurity(event.getItemStack());
         }
 
         if(stack.is(ThirstCanteenItem.LEATHER_CANTEEN)){
@@ -65,10 +67,8 @@ public class ThirstCanteen
 
     public static void setPurity(ItemStack item) {
         if (item.get(ThirstComponent.PURITY) == null) {
-            if(item.is(ThirstCanteenItem.MILITARY_BOTTLE_FULL.get()) || item.is(ThirstCanteenItem.LEATHER_CANTEEN_FULL.get()))
-                item.set(ThirstComponent.PURITY, 0);
-            if(item.is(ThirstCanteenItem.DRAGON_BOTTLE_FULL.get()))
-                item.set(ThirstComponent.PURITY, 2);
+            if(item.getItem() instanceof Canteen canteen)
+                item.set(ThirstComponent.PURITY, canteen.getDefaultPurity());
         }
     }
 }
