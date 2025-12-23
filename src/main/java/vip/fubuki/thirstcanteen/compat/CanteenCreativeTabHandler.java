@@ -5,13 +5,12 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
 import vip.fubuki.thirstcanteen.ThirstCanteen;
 import vip.fubuki.thirstcanteen.common.item.Canteen;
 import vip.fubuki.thirstcanteen.registry.ThirstCanteenItem;
 
-@Mod.EventBusSubscriber
 public class CanteenCreativeTabHandler {
     @SubscribeEvent
     public static void addCreative(BuildCreativeModeTabContentsEvent event) {
@@ -34,5 +33,9 @@ public class CanteenCreativeTabHandler {
             }
             event.accept(itemStack);
         });
+    }
+
+    public static void register(IEventBus modBus) {
+        modBus.register(CanteenCreativeTabHandler.class);
     }
 }
