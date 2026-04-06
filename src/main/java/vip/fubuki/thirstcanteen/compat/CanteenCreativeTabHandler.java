@@ -29,8 +29,6 @@ public class CanteenCreativeTabHandler {
             ItemStack itemStack = itemRegistryObject.get().getDefaultInstance();
             if(itemStack.getItem() instanceof Canteen canteen){
                 Canteen.setContain(itemStack,canteen.getMaxUsableTimes());
-                if(ThirstCanteen.thirstLoaded)
-                    ThirstCanteen.setPurity(itemStack);
             }
             event.accept(itemStack);
         });

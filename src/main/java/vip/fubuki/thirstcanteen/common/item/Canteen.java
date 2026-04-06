@@ -1,6 +1,7 @@
 package vip.fubuki.thirstcanteen.common.item;
 
 import dev.ghen.thirst.content.purity.WaterPurity;
+import dev.ghen.thirst.content.registry.ThirstComponent;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
@@ -77,6 +78,12 @@ public class Canteen extends Item implements Drinkable{
 
     public int getDefaultPurity(){
         return Math.min(defaultPurity.get(), 3);
+    }
+
+    @Override
+    public void inventoryTick(@NotNull ItemStack stack, @NotNull Level level, @NotNull net.minecraft.world.entity.Entity entity, int slotId, boolean isSelected) {
+        if(!level.isClientSide && ThirstCanteen.thirstLoaded && stack.get(ThirstComponent.PURITY) == null)
+            stack.set(ThirstComponent.PURITY, getDefaultPurity());
     }
 
     @Override
