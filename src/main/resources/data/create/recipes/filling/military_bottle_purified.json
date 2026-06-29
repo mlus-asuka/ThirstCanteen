@@ -1,0 +1,24 @@
+{
+  "type": "create:filling",
+  "ingredients": [
+    {
+      "item": "thirstcanteen:military_bottle"
+    },
+    {
+      "fluid": "minecraft:water",
+	  "nbt": {
+      "Purity": 3
+    },
+      "amount": 3000
+    }
+  ],
+  "results": [
+    {
+      "item": "thirstcanteen:military_bottle_full",
+	  "nbt": {
+      "Contain": 12,
+	  "Purity": 3
+    }
+    }
+  ]
+}

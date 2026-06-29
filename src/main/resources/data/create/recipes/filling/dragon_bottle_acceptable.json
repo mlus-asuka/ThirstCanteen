@@ -1,0 +1,24 @@
+{
+  "type": "create:filling",
+  "ingredients": [
+    {
+      "item": "thirstcanteen:dragon_bottle"
+    },
+    {
+      "fluid": "minecraft:water",
+	  "nbt": {
+      "Purity": 2
+    },
+      "amount": 4000
+    }
+  ],
+  "results": [
+    {
+      "item": "thirstcanteen:dragon_bottle_full",
+	  "nbt": {
+      "Contain": 16,
+	  "Purity": 2
+    }
+    }
+  ]
+}
