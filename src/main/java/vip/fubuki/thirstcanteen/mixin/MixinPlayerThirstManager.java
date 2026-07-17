@@ -1,9 +1,11 @@
 package vip.fubuki.thirstcanteen.mixin;
 
+import cn.mlus.thirst.content.thirst.PlayerThirstManager;
+import cn.mlus.thirst.foundation.common.capability.ModCapabilities;
 import dev.ghen.thirst.api.ThirstHelper;
 import dev.ghen.thirst.content.purity.WaterPurity;
-import dev.ghen.thirst.content.thirst.PlayerThirstManager;
-import dev.ghen.thirst.foundation.common.capability.ModCapabilities;
+
+
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;

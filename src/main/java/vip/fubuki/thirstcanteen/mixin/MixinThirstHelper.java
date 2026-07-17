@@ -1,6 +1,7 @@
 package vip.fubuki.thirstcanteen.mixin;
 
-import dev.ghen.thirst.api.ThirstHelper;
+
+import cn.mlus.thirst.api.ThirstHelper;
 import net.minecraft.world.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -10,6 +11,13 @@ import vip.fubuki.thirstcanteen.common.item.Canteen;
 
 @Mixin(value = ThirstHelper.class,remap = false)
 public class MixinThirstHelper {
+    @Inject(method = "itemRestoresThirst", at=@At("HEAD"), cancellable = true)
+    private static void itemRestoresThirst(ItemStack itemStack, CallbackInfoReturnable<Boolean> cir){
+        if(itemStack.getItem() instanceof Canteen){
+            cir.setReturnValue(true);
+        }
+    }
+
     @Inject(method = "getThirst", at=@At("HEAD"), cancellable = true)
     private static void getThirst(ItemStack itemStack, CallbackInfoReturnable<Integer> cir){
        if(itemStack.getItem() instanceof Canteen canteen){

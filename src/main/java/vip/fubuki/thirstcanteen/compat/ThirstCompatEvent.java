@@ -1,6 +1,6 @@
 package vip.fubuki.thirstcanteen.compat;
 
-import dev.ghen.thirst.foundation.common.event.RegisterThirstValueEvent;
+import cn.mlus.thirst.foundation.common.event.RegisterThirstValueEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import vip.fubuki.thirstcanteen.common.item.Canteen;
