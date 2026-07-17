@@ -1,6 +1,6 @@
 package vip.fubuki.thirstcanteen.common.item;
 
-import dev.ghen.thirst.foundation.tab.ThirstTab;
+import cn.mlus.thirst.foundation.tab.ThirstTab;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.context.UseOnContext;
 import org.jetbrains.annotations.NotNull;

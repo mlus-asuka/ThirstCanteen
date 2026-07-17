@@ -1,7 +1,7 @@
 package vip.fubuki.thirstcanteen.common.item;
 
+import cn.mlus.thirst.foundation.util.MathHelper;
 import dev.ghen.thirst.content.purity.WaterPurity;
-import dev.ghen.thirst.foundation.util.MathHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;

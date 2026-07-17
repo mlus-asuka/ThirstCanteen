@@ -10,6 +10,13 @@ import vip.fubuki.thirstcanteen.common.item.Canteen;
 
 @Mixin(value = ThirstHelper.class,remap = false)
 public class MixinThirstHelper {
+    @Inject(method = "itemRestoresThirst", at=@At("HEAD"), cancellable = true)
+    private static void itemRestoresThirst(ItemStack itemStack, CallbackInfoReturnable<Boolean> cir){
+        if(itemStack.getItem() instanceof Canteen){
+            cir.setReturnValue(true);
+        }
+    }
+
     @Inject(method = "getThirst", at=@At("HEAD"), cancellable = true)
     private static void getThirst(ItemStack itemStack, CallbackInfoReturnable<Integer> cir){
        if(itemStack.getItem() instanceof Canteen canteen){
@@ -19,8 +26,8 @@ public class MixinThirstHelper {
 
     @Inject(method = "getQuenched", at=@At("HEAD"), cancellable = true)
     private static void getQuenched(ItemStack itemStack, CallbackInfoReturnable<Integer> cir){
-        if(itemStack.getItem() instanceof Canteen canteen){
-            cir.setReturnValue(canteen.getLeftUsableTimes(itemStack) * 8);
+         if(itemStack.getItem() instanceof Canteen canteen){
+             cir.setReturnValue(canteen.getLeftUsableTimes(itemStack) * 8);
         }
     }
 }

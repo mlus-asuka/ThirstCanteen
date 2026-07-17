@@ -1,6 +1,6 @@
 package vip.fubuki.thirstcanteen.common.item;
 
-import dev.ghen.thirst.foundation.tab.ThirstTab;
+import cn.mlus.thirst.foundation.tab.ThirstTab;
 import vip.fubuki.thirstcanteen.registry.ThirstCanteenItem;
 
 public class FullMilitaryBottle extends Canteen{
